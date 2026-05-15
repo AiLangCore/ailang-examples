@@ -1,0 +1,12 @@
+Program#p1 {
+  Export#e1(name=start)
+
+  Let#l1(name=start) {
+    Fn#f1(params=args) {
+      Block#b1 {
+        Call#c1(target=sys.stdout.writeLine) { Lit#s1(value="Hello from AiLang examples.") }
+        Return#r1 { Lit#i1(value=0) }
+      }
+    }
+  }
+}

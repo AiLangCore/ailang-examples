@@ -1,0 +1,12 @@
+.DS_Store
+.ailang/
+.local/
+.tmp/
+.toolchain/
+dist/
+build/
+out/
+*.aibc1
+*.log
+packages/
+ailang.lock.toml

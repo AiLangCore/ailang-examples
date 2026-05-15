@@ -1,0 +1,5 @@
+Program#p1 {
+  Project#proj1(name="package-demo" entryFile="src/app.aos" entryExport="start" version="0.0.1-alpha.1") {
+    Include#dep_json(name="std-json")
+  }
+}
