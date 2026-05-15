@@ -15,3 +15,7 @@ ailang run .
 
 Expected behavior: a small AiVectra window or runtime frame is created by the
 installed SDK/runtime. During alpha, platform UI behavior may vary by host.
+
+The repository validation script builds this app, but does not launch it
+automatically. Run `ailang run .` manually when you want to exercise the
+interactive UI lifecycle.

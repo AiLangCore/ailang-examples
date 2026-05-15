@@ -30,11 +30,15 @@ aivm --version
 aivectra --version
 ```
 
-## Run All Examples
+## Validate Examples
 
 ```bash
 ./scripts/validate-examples.sh
 ```
+
+The validation script builds every example and runs the command-line examples.
+The AiVectra example is an interactive UI app, so validation builds it and prints
+the manual launch command instead of opening a window in automation.
 
 When validating from a local multi-repo checkout before the SDK installer has
 seeded the package registry, point the package manager at the sibling registry:

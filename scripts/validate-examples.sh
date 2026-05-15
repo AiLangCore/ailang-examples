@@ -25,6 +25,18 @@ run_example() {
   )
 }
 
+build_example() {
+  local path="$1"
+  echo "== ${path} =="
+  (
+    cd "${path}"
+    if grep -Eq 'Include#|Include\(' project.aiproj; then
+      ailang package restore
+    fi
+    ailang build .
+  )
+}
+
 require_tool ailang
 require_tool aivm
 require_tool aivectra
@@ -35,9 +47,5 @@ aivectra --version
 
 run_example examples/hello-cli
 run_example examples/package-demo
-
-if [[ "${AILANG_EXAMPLES_RUN_UI:-0}" == "1" ]]; then
-  run_example examples/hello-aivectra
-else
-  echo "skipping examples/hello-aivectra; set AILANG_EXAMPLES_RUN_UI=1 to run UI demo"
-fi
+build_example examples/hello-aivectra
+echo "built examples/hello-aivectra; run it manually with: cd examples/hello-aivectra && ailang run ."
