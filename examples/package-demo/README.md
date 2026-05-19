@@ -11,5 +11,7 @@ ailang build .
 ailang run .
 ```
 
-This example includes `std-json` to prove package restore and lockfile behavior.
-The app itself is intentionally simple so the package workflow is the focus.
+This example includes `ailang` and `std-json` from the curated registry, imports
+library source from the restored package cache, and runs through the normal
+build pipeline. The app itself is intentionally simple so the package workflow
+is the focus.

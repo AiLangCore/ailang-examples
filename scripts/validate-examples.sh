@@ -4,6 +4,10 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT_DIR}"
 
+if [[ -z "${AILANG_PACKAGE_REGISTRY:-}" && -d "${ROOT_DIR}/../ailang-packages/packages" ]]; then
+  export AILANG_PACKAGE_REGISTRY="${ROOT_DIR}/../ailang-packages"
+fi
+
 require_tool() {
   if ! command -v "$1" >/dev/null 2>&1; then
     echo "missing required tool: $1" >&2
