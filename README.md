@@ -7,6 +7,14 @@ Regression fixtures, golden tests, and tiny contract examples stay in the repos
 that own the behavior. This repo contains human-facing examples that should be
 easy to browse, run, and critique.
 
+This repository uses `main` as its public default branch. Examples should use
+the public SDK flow unless they explicitly document local workspace
+development.
+
+Public roadmap:
+
+- https://ailang.codes/docs/roadmap.html
+
 ## Examples
 
 - `examples/hello-cli` - minimal command-line AiLang project.
