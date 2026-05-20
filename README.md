@@ -27,7 +27,7 @@ Verify the installed tools:
 ```bash
 ailang --version
 aivm --version
-aivectra --version
+aivectra help
 ```
 
 ## Validate Examples
