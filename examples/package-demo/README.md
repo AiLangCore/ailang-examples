@@ -11,7 +11,6 @@ ailang build .
 ailang run .
 ```
 
-This example includes `ailang` and `std-json` from the curated registry, imports
-library source from the restored package cache, and runs through the normal
-build pipeline. The app itself is intentionally simple so the package workflow
-is the focus.
+This example restores `std-json` from the curated registry, imports AiLang core
+from the selected SDK, and runs through the normal build pipeline. The app
+itself is intentionally simple so the package workflow is the focus.
