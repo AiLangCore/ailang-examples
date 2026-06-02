@@ -1,0 +1,9 @@
+Program {
+  Project(
+    name="HelloWorld"
+    entryFile="src/app.aos"
+    entryExport="start"
+  ) {
+    Include(name="aivectra")
+  }
+}

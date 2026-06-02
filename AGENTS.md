@@ -30,3 +30,7 @@ belong in the owning source repository.
 - `examples/hello-cli`
 - `examples/hello-aivectra`
 - `examples/package-demo`
+- `examples/aivectra/hello-world`
+- `examples/aivectra/hello-name`
+- `examples/aivectra/interactive-svg-mvp`
+- `examples/aivectra/worker-demo`

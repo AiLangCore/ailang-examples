@@ -20,6 +20,10 @@ Public roadmap:
 - `examples/hello-cli` - minimal command-line AiLang project.
 - `examples/hello-aivectra` - minimal AiVectra package-based UI project.
 - `examples/package-demo` - package restore workflow demo.
+- `examples/aivectra/hello-world` - minimal AiVectra app structure and rendering.
+- `examples/aivectra/hello-name` - AiVectra text input, keyboard, click, and replay behavior.
+- `examples/aivectra/interactive-svg-mvp` - deterministic SVG/debug artifact behavior.
+- `examples/aivectra/worker-demo` - experimental worker-driven UI update flow.
 
 ## Requirements
 
@@ -44,9 +48,9 @@ aivectra help
 ./scripts/validate-examples.sh
 ```
 
-The validation script builds every example and runs the command-line examples.
-The AiVectra example is an interactive UI app, so validation builds it and prints
-the manual launch command instead of opening a window in automation.
+The validation script builds every example, runs command-line examples, and
+runs deterministic non-windowed modes for AiVectra UI examples. Windowed UI
+launch remains a manual demo step.
 
 When validating from a local multi-repo checkout before the SDK installer has
 seeded the package registry, point the package manager at the sibling registry:
@@ -65,6 +69,11 @@ ailang build .
 ailang run .
 
 cd ../hello-aivectra
+ailang package restore
+ailang build .
+ailang run .
+
+cd ../aivectra/hello-name
 ailang package restore
 ailang build .
 ailang run .
