@@ -1,0 +1,215 @@
+Program {
+  Import(sdk="ailang" path="std/math.aos")
+  Import(sdk="ailang" path="std/str.aos")
+
+  Export(name=strLen)
+  Export(name=findFrom)
+  Export(name=contains)
+  Export(name=minPositive)
+  Export(name=replaceSpaces)
+  Export(name=nthPos)
+  Export(name=quotedValueAt)
+  Export(name=numberValueAt)
+  Export(name=csvNth)
+  Export(name=arrayListForKey)
+  Export(name=nonEmpty)
+
+  Let(name=strLen) {
+    Fn(params=text) {
+      Block { Return { Call(target=textLen) { Var(name=text) } } }
+    }
+  }
+
+  Let(name=findFrom) {
+    Fn(params=text,pattern,index) {
+      Block {
+        Return { Call(target=find) { Var(name=text) Var(name=pattern) Var(name=index) } }
+      }
+    }
+  }
+
+  Let(name=contains) {
+    Fn(params=text,pattern) {
+      Block { Return { Call(target=gte) { Call(target=findFrom) { Var(name=text) Var(name=pattern) Lit(value=0) } Lit(value=0) } } }
+    }
+  }
+
+  Let(name=minPositive) {
+    Fn(params=a,b,fallback) {
+      Block {
+        If {
+          Call(target=lt) { Var(name=a) Lit(value=0) }
+          Block {
+            If {
+              Call(target=lt) { Var(name=b) Lit(value=0) }
+              Block { Return { Var(name=fallback) } }
+              Block { Return { Var(name=b) } }
+            }
+          }
+          Block {
+            If {
+              Call(target=lt) { Var(name=b) Lit(value=0) }
+              Block { Return { Var(name=a) } }
+              Block {
+                If {
+                  Call(target=lt) { Var(name=a) Var(name=b) }
+                  Block { Return { Var(name=a) } }
+                  Block { Return { Var(name=b) } }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=replaceSpaces) {
+    Fn(params=text) {
+      Block {
+        Return { Call(target=replaceAll) { Var(name=text) Lit(value=" ") Lit(value="%20") } }
+      }
+    }
+  }
+
+  Let(name=nthPos) {
+    Fn(params=text,token,start,n) {
+      Block {
+        If {
+          Call(target=lt) { Var(name=n) Lit(value=1) }
+          Block { Return { Lit(value=-1) } }
+          Block {
+            Let(name=found) { Call(target=findFrom) { Var(name=text) Var(name=token) Var(name=start) } }
+            If {
+              Call(target=lt) { Var(name=found) Lit(value=0) }
+              Block { Return { Lit(value=-1) } }
+              Block {
+                If {
+                  Eq { Var(name=n) Lit(value=1) }
+                  Block { Return { Var(name=found) } }
+                  Block {
+                    Return {
+                      Call(target=nthPos) {
+                        Var(name=text)
+                        Var(name=token)
+                        Add { Var(name=found) Call(target=strLen) { Var(name=token) } }
+                        Add { Var(name=n) Lit(value=-1) }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=quotedValueAt) {
+    Fn(params=text,token,start,n) {
+      Block {
+        Let(name=pos) { Call(target=nthPos) { Var(name=text) Var(name=token) Var(name=start) Var(name=n) } }
+        If {
+          Call(target=lt) { Var(name=pos) Lit(value=0) }
+          Block { Return { Lit(value="") } }
+          Block {
+            Let(name=valueStart) { Add { Var(name=pos) Call(target=strLen) { Var(name=token) } } }
+            Let(name=valueEnd) { Call(target=findFrom) { Var(name=text) Lit(value="\"") Var(name=valueStart) } }
+            If {
+              Call(target=lt) { Var(name=valueEnd) Lit(value=0) }
+              Block { Return { Lit(value="") } }
+              Block {
+                Return { Call(target=substring) { Var(name=text) Var(name=valueStart) Call(target=sub) { Var(name=valueEnd) Var(name=valueStart) } } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=numberValueAt) {
+    Fn(params=text,token,start,n) {
+      Block {
+        Let(name=pos) { Call(target=nthPos) { Var(name=text) Var(name=token) Var(name=start) Var(name=n) } }
+        If {
+          Call(target=lt) { Var(name=pos) Lit(value=0) }
+          Block { Return { Lit(value="") } }
+          Block {
+            Let(name=valueStart) { Add { Var(name=pos) Call(target=strLen) { Var(name=token) } } }
+            Let(name=commaPos) { Call(target=findFrom) { Var(name=text) Lit(value=",") Var(name=valueStart) } }
+            Let(name=bracePos) { Call(target=findFrom) { Var(name=text) Lit(value="}") Var(name=valueStart) } }
+            Let(name=bracketPos) { Call(target=findFrom) { Var(name=text) Lit(value="]") Var(name=valueStart) } }
+            Let(name=end1) { Call(target=minPositive) { Var(name=commaPos) Var(name=bracePos) Call(target=strLen) { Var(name=text) } } }
+            Let(name=end2) { Call(target=minPositive) { Var(name=end1) Var(name=bracketPos) Call(target=strLen) { Var(name=text) } } }
+            Return { Call(target=substring) { Var(name=text) Var(name=valueStart) Call(target=sub) { Var(name=end2) Var(name=valueStart) } } }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=csvNth) {
+    Fn(params=listText,n) {
+      Block {
+        If {
+          Eq { Var(name=n) Lit(value=1) }
+          Block {
+            Let(name=commaPos) { Call(target=findFrom) { Var(name=listText) Lit(value=",") Lit(value=0) } }
+            If {
+              Call(target=lt) { Var(name=commaPos) Lit(value=0) }
+              Block { Return { Var(name=listText) } }
+              Block { Return { Call(target=substring) { Var(name=listText) Lit(value=0) Var(name=commaPos) } } }
+            }
+          }
+          Block {
+            Let(name=commaPos) { Call(target=findFrom) { Var(name=listText) Lit(value=",") Lit(value=0) } }
+            If {
+              Call(target=lt) { Var(name=commaPos) Lit(value=0) }
+              Block { Return { Lit(value="") } }
+              Block {
+                Let(name=nextStart) { Add { Var(name=commaPos) Lit(value=1) } }
+                Let(name=tail) { Call(target=substring) { Var(name=listText) Var(name=nextStart) Call(target=sub) { Call(target=strLen) { Var(name=listText) } Var(name=nextStart) } } }
+                Return { Call(target=csvNth) { Var(name=tail) Add { Var(name=n) Lit(value=-1) } } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=arrayListForKey) {
+    Fn(params=json,key,start) {
+      Block {
+        Let(name=keyPos) { Call(target=findFrom) { Var(name=json) Var(name=key) Var(name=start) } }
+        If {
+          Call(target=lt) { Var(name=keyPos) Lit(value=0) }
+          Block { Return { Lit(value="") } }
+          Block {
+            Let(name=listStart) { Add { Var(name=keyPos) Call(target=strLen) { Var(name=key) } } }
+            Let(name=listEnd) { Call(target=findFrom) { Var(name=json) Lit(value="]") Var(name=listStart) } }
+            If {
+              Call(target=lt) { Var(name=listEnd) Lit(value=0) }
+              Block { Return { Lit(value="") } }
+              Block { Return { Call(target=substring) { Var(name=json) Var(name=listStart) Call(target=sub) { Var(name=listEnd) Var(name=listStart) } } } }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=nonEmpty) {
+    Fn(params=text) {
+      Block {
+        If {
+          Eq { Var(name=text) Lit(value="") }
+          Block { Return { Lit(value=false) } }
+          Block { Return { Lit(value=true) } }
+        }
+      }
+    }
+  }
+}

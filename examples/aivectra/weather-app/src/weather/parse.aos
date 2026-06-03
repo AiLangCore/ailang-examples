@@ -1,0 +1,114 @@
+Program {
+  Import(sdk="ailang" path="std/math.aos")
+  Import(path="text.aos")
+
+  Export(name=geoLabelAt)
+  Export(name=geoLatAt)
+  Export(name=geoLonAt)
+  Export(name=weatherCodeText)
+  Export(name=currentLineFromForecast)
+  Export(name=dayLineFromForecast)
+
+  Let(name=geoLabelAt) {
+    Fn(params=geoBody,index) {
+      Block {
+        Let(name=name) { Call(target=quotedValueAt) { Var(name=geoBody) Lit(value="\"name\":\"") Lit(value=0) Var(name=index) } }
+        Let(name=admin) { Call(target=quotedValueAt) { Var(name=geoBody) Lit(value="\"admin1\":\"") Lit(value=0) Var(name=index) } }
+        If {
+          Eq { Var(name=name) Lit(value="") }
+          Block { Return { Lit(value="") } }
+          Block {
+            If {
+              Eq { Var(name=admin) Lit(value="") }
+              Block { Return { Var(name=name) } }
+              Block { Return { StrConcat { Var(name=name) StrConcat { Lit(value=", ") Var(name=admin) } } } }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=geoLatAt) {
+    Fn(params=geoBody,index) {
+      Block { Return { Call(target=numberValueAt) { Var(name=geoBody) Lit(value="\"latitude\":") Lit(value=0) Var(name=index) } } }
+    }
+  }
+
+  Let(name=geoLonAt) {
+    Fn(params=geoBody,index) {
+      Block { Return { Call(target=numberValueAt) { Var(name=geoBody) Lit(value="\"longitude\":") Lit(value=0) Var(name=index) } } }
+    }
+  }
+
+  Let(name=weatherCodeText) {
+    Fn(params=code) {
+      Block {
+        Return {
+          If { Eq { Var(name=code) Lit(value="0") } Block { Lit(value="Clear") } Block {
+            If { Eq { Var(name=code) Lit(value="1") } Block { Lit(value="Mainly clear") } Block {
+              If { Eq { Var(name=code) Lit(value="2") } Block { Lit(value="Partly cloudy") } Block {
+                If { Eq { Var(name=code) Lit(value="3") } Block { Lit(value="Cloudy") } Block {
+                  If { Eq { Var(name=code) Lit(value="45") } Block { Lit(value="Fog") } Block {
+                    If { Eq { Var(name=code) Lit(value="61") } Block { Lit(value="Rain") } Block {
+                      If { Eq { Var(name=code) Lit(value="71") } Block { Lit(value="Snow") } Block { Lit(value="Weather") } }
+                    } }
+                  } }
+                } }
+              } }
+            } }
+          } }
+        }
+      }
+    }
+  }
+
+  Let(name=currentLineFromForecast) {
+    Fn(params=forecastBody) {
+      Block {
+        Let(name=currentStart) { Call(target=findFrom) { Var(name=forecastBody) Lit(value="\"current\":{") Lit(value=0) } }
+        If {
+          Call(target=lt) { Var(name=currentStart) Lit(value=0) }
+          Block { Return { Lit(value="Now: unavailable") } }
+          Block {
+            Let(name=temp) { Call(target=numberValueAt) { Var(name=forecastBody) Lit(value="\"temperature_2m\":") Var(name=currentStart) Lit(value=1) } }
+            Let(name=code) { Call(target=numberValueAt) { Var(name=forecastBody) Lit(value="\"weather_code\":") Var(name=currentStart) Lit(value=1) } }
+            Return {
+              StrConcat {
+                Lit(value="Now: ")
+                StrConcat { Var(name=temp) StrConcat { Lit(value=" C  ") Call(target=weatherCodeText) { Var(name=code) } } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=dayLineFromForecast) {
+    Fn(params=forecastBody,dayIndex) {
+      Block {
+        Let(name=dailyStart) { Call(target=findFrom) { Var(name=forecastBody) Lit(value="\"daily\":{") Lit(value=0) } }
+        If {
+          Call(target=lt) { Var(name=dailyStart) Lit(value=0) }
+          Block { Return { Lit(value="--") } }
+          Block {
+            Let(name=maxList) { Call(target=arrayListForKey) { Var(name=forecastBody) Lit(value="\"temperature_2m_max\":[") Var(name=dailyStart) } }
+            Let(name=minList) { Call(target=arrayListForKey) { Var(name=forecastBody) Lit(value="\"temperature_2m_min\":[") Var(name=dailyStart) } }
+            Let(name=maxVal) { Call(target=csvNth) { Var(name=maxList) Var(name=dayIndex) } }
+            Let(name=minVal) { Call(target=csvNth) { Var(name=minList) Var(name=dayIndex) } }
+            Return {
+              StrConcat {
+                Lit(value="D")
+                StrConcat {
+                  ToString { Var(name=dayIndex) }
+                  StrConcat { Lit(value=": ") StrConcat { Var(name=maxVal) StrConcat { Lit(value="/") StrConcat { Var(name=minVal) Lit(value=" C") } } } }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

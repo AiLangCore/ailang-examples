@@ -1,0 +1,103 @@
+Program {
+  Import(sdk="ailang" path="std/math.aos")
+  Import(package="std-http" path="src/net/http.aos")
+  Import(path="text.aos")
+
+  Export(name=bodyFromHttp)
+  Export(name=fetchGeoPath)
+  Export(name=fetchForecastPath)
+  Export(name=startHttpGet)
+  Export(name=startGeoRequest)
+  Export(name=startForecastRequest)
+  Export(name=httpErrorDisplay)
+
+  Let(name=bodyFromHttp) {
+    Fn(params=response) {
+      Block {
+        Return { Call(target=httpResponseBody) { Var(name=response) } }
+      }
+    }
+  }
+
+  Let(name=fetchGeoPath) {
+    Fn(params=query) {
+      Block {
+        Let(name=encoded) { Call(target=replaceSpaces) { Var(name=query) } }
+        Return {
+          StrConcat {
+            Lit(value="/v1/search?name=")
+            StrConcat { Var(name=encoded) Lit(value="&count=3&language=en&format=json") }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=fetchForecastPath) {
+    Fn(params=lat,lon) {
+      Block {
+        Return {
+          StrConcat {
+            Lit(value="/v1/forecast?latitude=")
+            StrConcat {
+              Var(name=lat)
+              StrConcat {
+                Lit(value="&longitude=")
+                StrConcat {
+                  Var(name=lon)
+                  Lit(value="&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5")
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=startHttpGet) {
+    Fn(params=host,path) {
+      Block {
+        Return {
+          Call(target=httpRequest) {
+            Lit(value="GET")
+            Var(name=host)
+            Lit(value=443)
+            Var(name=path)
+            Lit(value="User-Agent: AiVectraWeather\\r\\nAccept: application/json\\r\\nConnection: close")
+            Lit(value="")
+            Lit(value=4096)
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=startGeoRequest) {
+    Fn(params=query) {
+      Block {
+        Return { Call(target=startHttpGet) { Lit(value="geocoding-api.open-meteo.com") Call(target=fetchGeoPath) { Var(name=query) } } }
+      }
+    }
+  }
+
+  Let(name=startForecastRequest) {
+    Fn(params=lat,lon) {
+      Block {
+        Return { Call(target=startHttpGet) { Lit(value="api.open-meteo.com") Call(target=fetchForecastPath) { Var(name=lat) Var(name=lon) } } }
+      }
+    }
+  }
+
+  Let(name=httpErrorDisplay) {
+    Fn(params=errorCode) {
+      Block {
+        If {
+          Eq { Var(name=errorCode) Lit(value="timeout") }
+          Block { Return { Lit(value="request timed out") } }
+          Block { Return { Var(name=errorCode) } }
+        }
+      }
+    }
+  }
+}

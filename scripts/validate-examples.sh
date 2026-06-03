@@ -16,16 +16,22 @@ require_tool() {
   fi
 }
 
+AILANG_BIN="${AILANG_BIN:-}"
+if [[ -z "${AILANG_BIN}" && -x "${ROOT_DIR}/../AiLang/tools/ailang" ]]; then
+  AILANG_BIN="${ROOT_DIR}/../AiLang/tools/ailang"
+fi
+AILANG_BIN="${AILANG_BIN:-ailang}"
+
 run_example() {
   local path="$1"
   echo "== ${path} =="
   (
     cd "${path}"
     if grep -Eq 'Include#|Include\(' project.aiproj; then
-      ailang package restore
+      "${AILANG_BIN}" package restore
     fi
-    ailang build .
-    ailang run .
+    "${AILANG_BIN}" build .
+    "${AILANG_BIN}" run .
   )
 }
 
@@ -35,9 +41,9 @@ build_example() {
   (
     cd "${path}"
     if grep -Eq 'Include#|Include\(' project.aiproj; then
-      ailang package restore
+      "${AILANG_BIN}" package restore
     fi
-    ailang build .
+    "${AILANG_BIN}" build .
   )
 }
 
@@ -49,10 +55,10 @@ build_and_run_mode() {
   (
     cd "${path}"
     if grep -Eq 'Include#|Include\(' project.aiproj; then
-      ailang package restore
+      "${AILANG_BIN}" package restore
     fi
-    ailang build .
-    out="$(ailang run . "${mode}")"
+    "${AILANG_BIN}" build .
+    out="$("${AILANG_BIN}" run . "${mode}")"
     printf "%s\n" "$out"
     if [[ -n "$expected" ]] && ! printf "%s\n" "$out" | grep -Fq "$expected"; then
       echo "expected output fragment not found: $expected" >&2
@@ -61,11 +67,13 @@ build_and_run_mode() {
   )
 }
 
-require_tool ailang
+if [[ "${AILANG_BIN}" == "ailang" ]]; then
+  require_tool ailang
+fi
 require_tool aivm
 require_tool aivectra
 
-ailang --version
+"${AILANG_BIN}" --version
 aivm --version
 aivectra --version
 

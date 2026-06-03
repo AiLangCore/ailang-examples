@@ -1,6 +1,7 @@
 # WeatherApp (AiVectra)
 
-Experimental network-backed AiVectra example.
+Production-style AiVectra example backed by the Open-Meteo geocoding and
+forecast APIs.
 
 ## Run
 
@@ -10,10 +11,22 @@ ailang build .
 ailang run .
 ```
 
-## Notes
+The app opens an AiVectra window, accepts a city or ZIP-style query, fetches
+matching locations from Open-Meteo, and loads the selected forecast from live
+Open-Meteo data.
+
+## Structure
+
+```text
+src/app.aos            # entry point, UI rendering, event flow
+src/weather/text.aos   # focused string/search helpers
+src/weather/http.aos   # Open-Meteo request paths and HTTP boundary
+src/weather/parse.aos  # geocode and forecast response parsing
+```
+
+## Dependencies
 
 - Imports AiVectra through the `aivectra` package.
 - Imports HTTP helpers through the `std-http` package.
-- Uses Open-Meteo APIs when run interactively.
-- This remains experimental until the HTTP/package/runtime boundaries are stable
-  enough for primary demos.
+- Uses real Open-Meteo responses; no canned weather payloads are embedded in the
+  application source.
