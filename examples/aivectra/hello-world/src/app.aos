@@ -1,6 +1,16 @@
 Program {
+  Import(package="aivectra" path="src/AiVectra/src/app.aos")
   Import(package="aivectra" path="src/AiVectra/src/lib.aos")
   Export(name=start)
+
+  Let(name=app) {
+    Call(target=aivectraApp) {
+      Lit(value="HelloWorld")
+      Lit(value="init")
+      Lit(value="update")
+      Lit(value="render")
+    }
+  }
 
   Let(name=start) {
     Fn(params=args) {
