@@ -1,4 +1,5 @@
 Program {
+  Import(package="aivectra" path="src/AiVectra/src/app.aos")
   Import(package="aivectra" path="src/AiVectra/src/lib.aos")
   Import(package="std-http" path="src/net/http.aos")
   Import(sdk="ailang" path="std/str.aos")
@@ -7,6 +8,15 @@ Program {
   Import(path="weather/parse.aos")
   Import(path="weather/ui.aos")
   Export(name=start)
+
+  Let(name=app) {
+    Call(target=aivectraApp) {
+      Lit(value="Weather")
+      Lit(value="init")
+      Lit(value="update")
+      Lit(value="render")
+    }
+  }
 
   Let(name=selectGeoAndLoop) {
     Fn(params=handle,query,geoBody,index,radarOpen,nextRadarTick,w,h) {
