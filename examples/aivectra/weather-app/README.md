@@ -17,7 +17,3 @@ ailang run .
 - Uses Open-Meteo APIs when run interactively.
 - This remains experimental until the HTTP/package/runtime boundaries are stable
   enough for primary demos.
-- Current blocker: `std-http` still calls older `fromUtf8String` helper names,
-  while the current AiLang SDK exports `bytes.fromUtf8String`. This example is
-  intentionally excluded from `scripts/validate-examples.sh` until `std-http`
-  is updated.

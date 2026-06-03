@@ -80,5 +80,5 @@ build_and_run_mode examples/aivectra/hello-name replay "[aivectra] replay greeti
 build_and_run_mode examples/aivectra/interactive-svg-mvp snapshot "[aivectra] layout shapes="
 build_and_run_mode examples/aivectra/interactive-svg-mvp replay "[aivectra] replay greeting=Greeting: Hello, Joe!"
 build_and_run_mode examples/aivectra/worker-demo snapshot "Ok#ok1(type=int value=0)"
+build_and_run_mode examples/aivectra/weather-app snapshot "Ok#ok1(type=int value=0)"
 echo "validated AiVectra UI examples with deterministic non-windowed modes; run them manually from examples/aivectra/<name> with: ailang run ."
-echo "skipped examples/aivectra/weather-app: experimental until std-http uses current bytes namespace exports"
