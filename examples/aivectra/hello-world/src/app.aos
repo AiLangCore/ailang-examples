@@ -1,6 +1,9 @@
 Program {
   Import(package="aivectra" path="src/AiVectra/src/app.aos")
   Import(package="aivectra" path="src/AiVectra/src/lib.aos")
+  Import(package="std-app" path="src/app/event.aos")
+  Import(package="std-app" path="src/app/next.aos")
+  Import(sdk="ailang" path="std/core.aos")
   Export(name=start)
 
   Let(name=app) {
@@ -12,16 +15,71 @@ Program {
     }
   }
 
+  Let(name=init) {
+    Fn(params=args) {
+      Block {
+        Return {
+          Map {
+            Field(key="greeting") { Lit(value="Hello World!") }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=update) {
+    Fn(params=state,event) {
+      Block {
+        Return { Call(target=nextNoCommands) { Var(name=state) } }
+      }
+    }
+  }
+
+  Let(name=render) {
+    Fn(params=handle,state) {
+      Block {
+        Return {
+          Call(target=drawHelloFrame) {
+            Var(name=handle)
+            Call(target=mapGetStringOr) {
+              Var(name=state)
+              Lit(value="greeting")
+              Lit(value="Hello World!")
+            }
+          }
+        }
+      }
+    }
+  }
+
   Let(name=start) {
     Fn(params=args) {
       Block {
+        Let(name=state) { Call(target=init) { Var(name=args) } }
+        Let(name=firstStep) {
+          Call(target=update) {
+            Var(name=state)
+            Call(target=startEvent) { Var(name=args) }
+          }
+        }
+        Let(name=currentState) { Call(target=nextState) { Var(name=firstStep) } }
         Let(name=mode) { Call(target=guiModeFromArgs) { Var(name=args) } }
         If {
           Eq { Var(name=mode) Lit(value="snapshot") }
           Block { Return { Lit(value=0) } }
           Block { Lit(value=0) }
         }
-        Call(target=helloNamedWindow) { Lit(value="World") }
+        Let(name=appSpec) {
+          Call(target=aivectraApp) {
+            Lit(value="HelloWorld")
+            Lit(value="init")
+            Lit(value="update")
+            Lit(value="render")
+          }
+        }
+        Let(name=handle) { Call(target=window) { Call(target=aivectraAppName) { Var(name=appSpec) } } }
+        Call(target=render) { Var(name=handle) Var(name=currentState) }
+        Call(target=waitForClose) { Var(name=handle) }
         Return { Lit(value=0) }
       }
     }
