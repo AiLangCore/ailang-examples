@@ -34,3 +34,4 @@ belong in the owning source repository.
 - `examples/aivectra/hello-name`
 - `examples/aivectra/interactive-svg-mvp`
 - `examples/aivectra/worker-demo`
+- `examples/aivectra/weather-app`

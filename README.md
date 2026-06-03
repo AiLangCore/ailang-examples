@@ -24,6 +24,7 @@ Public roadmap:
 - `examples/aivectra/hello-name` - AiVectra text input, keyboard, click, and replay behavior.
 - `examples/aivectra/interactive-svg-mvp` - deterministic SVG/debug artifact behavior.
 - `examples/aivectra/worker-demo` - experimental worker-driven UI update flow.
+- `examples/aivectra/weather-app` - experimental network-backed AiVectra app.
 
 ## Requirements
 
@@ -74,6 +75,11 @@ ailang build .
 ailang run .
 
 cd ../aivectra/hello-name
+ailang package restore
+ailang build .
+ailang run .
+
+cd ../weather-app
 ailang package restore
 ailang build .
 ailang run .

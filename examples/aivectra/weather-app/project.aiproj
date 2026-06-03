@@ -1,0 +1,10 @@
+Program {
+  Project(
+    name="WeatherApp"
+    entryFile="src/app.aos"
+    entryExport="start"
+  ) {
+    Include(name="aivectra")
+    Include(name="std-http")
+  }
+}
