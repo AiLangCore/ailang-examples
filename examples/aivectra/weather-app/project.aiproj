@@ -5,6 +5,7 @@ Program {
     entryExport="start"
   ) {
     Include(name="aivectra")
+    Include(name="std-app")
     Include(name="std-http")
   }
 }
