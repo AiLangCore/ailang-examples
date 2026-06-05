@@ -1,8 +1,6 @@
 Program {
   Import(package="aivectra" path="src/AiVectra/src/app.aos")
   Import(package="aivectra" path="src/AiVectra/src/lib.aos")
-  Import(package="std-app" path="src/app/event.aos")
-  Import(package="std-app" path="src/app/next.aos")
   Import(package="std-http" path="src/net/http.aos")
   Import(sdk="ailang" path="std/str.aos")
   Import(path="weather/text.aos")
