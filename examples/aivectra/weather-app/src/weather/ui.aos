@@ -3,9 +3,9 @@ Program {
   Import(path="text.aos")
   Import(path="parse.aos")
 
-  Export(name=render)
+  Export(name=renderWeatherFrame)
 
-  Let(name=render) {
+  Let(name=renderWeatherFrame) {
     Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible) {
       Block {
         Let(name=entryW) { Add { Var(name=w) Lit(value=-220) } }
