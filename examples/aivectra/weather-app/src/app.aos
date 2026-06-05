@@ -6,6 +6,7 @@ Program {
   Import(path="weather/text.aos")
   Import(path="weather/http.aos")
   Import(path="weather/parse.aos")
+  Import(path="weather/input.aos")
   Import(path="weather/ui.aos")
   Export(name=start)
 
@@ -108,89 +109,6 @@ Program {
             Lit(value=0)
           }
         }
-      }
-    }
-  }
-
-  Let(name=decIfPositive) {
-    Fn(params=value) {
-      Block {
-        If {
-          Call(target=intLt) { Lit(value=0) Var(name=value) }
-          Block { Return { Add { Var(name=value) Lit(value=-1) } } }
-          Block { Return { Lit(value=0) } }
-        }
-      }
-    }
-  }
-
-  Let(name=incWrap) {
-    Fn(params=value,maxValue) {
-      Block {
-        If {
-          Call(target=intGte) { Var(name=value) Var(name=maxValue) }
-          Block { Return { Lit(value=0) } }
-          Block { Return { Add { Var(name=value) Lit(value=1) } } }
-        }
-      }
-    }
-  }
-
-  Let(name=isBackKey) {
-    Fn(params=keyName) {
-      Block { Return { Eq { Call(target=controlKeyName) { Var(name=keyName) } Lit(value="backspace") } } }
-    }
-  }
-
-  Let(name=isEnterKey) {
-    Fn(params=keyName) {
-      Block { Return { Eq { Call(target=controlKeyName) { Var(name=keyName) } Lit(value="enter") } } }
-    }
-  }
-
-  Let(name=inputCharFromEvent) {
-    Fn(params=keyName,textValue) {
-      Block {
-        If {
-          Eq { Var(name=textValue) Lit(value="") }
-          Block { Return { Call(target=keyToText) { Var(name=keyName) } } }
-          Block { Return { Var(name=textValue) } }
-        }
-      }
-    }
-  }
-
-  Let(name=weatherRemoveLastChar) {
-    Fn(params=textValue) {
-      Block {
-        If {
-          Eq { Var(name=textValue) Lit(value="") }
-          Block { Return { Lit(value="") } }
-          Block {
-            Let(name=len) { Call(target=strLen) { Var(name=textValue) } }
-            Return {
-              Call(target=substring) {
-                Var(name=textValue)
-                Lit(value=0)
-                Call(target=sub) { Var(name=len) Lit(value=1) }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  Let(name=isForbiddenInputChar) {
-    Fn(params=textValue) {
-      Block {
-        If { Eq { Var(name=textValue) Lit(value="	") } Block { Return { Lit(value=true) } } Block {
-          If { Eq { Var(name=textValue) Lit(value="
-") } Block { Return { Lit(value=true) } } Block {
-            If { Eq { Var(name=textValue) Lit(value="
-") } Block { Return { Lit(value=true) } } Block { Return { Lit(value=false) } } }
-          } }
-        } }
       }
     }
   }
@@ -503,7 +421,7 @@ Program {
                       Block {
                         If {
                           Call(target=isBackKey) { Var(name=eventKey) }
-                          Block { Return { Call(target=loop) { Var(name=handle) Var(name=query) Var(name=focused) Var(name=dropdownOpen) Var(name=geoBody) Var(name=selectedLabel) Var(name=selectedLat) Var(name=selectedLon) Var(name=forecastBody) Var(name=statusLine) Var(name=radarOpen) Var(name=nextRadarTick) Var(name=w) Var(name=h) Var(name=nextFlash) Lit(value=0) Var(name=netKind) Var(name=netStateNow) Var(name=netTicksNow) } } }
+                          Block { Return { Call(target=loop) { Var(name=handle) Call(target=weatherRemoveLastChar) { Var(name=query) } Var(name=focused) Var(name=dropdownOpen) Var(name=geoBody) Var(name=selectedLabel) Var(name=selectedLat) Var(name=selectedLon) Var(name=forecastBody) Var(name=statusLine) Var(name=radarOpen) Var(name=nextRadarTick) Var(name=w) Var(name=h) Var(name=nextFlash) Lit(value=0) Var(name=netKind) Var(name=netStateNow) Var(name=netTicksNow) } } }
                           Block {
                             If {
                               Call(target=isEnterKey) { Var(name=eventKey) }

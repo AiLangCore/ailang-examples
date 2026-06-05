@@ -1,0 +1,69 @@
+Program {
+  Import(package="aivectra" path="src/AiVectra/src/lib.aos")
+  Import(sdk="ailang" path="std/str.aos")
+
+  Export(name=isBackKey)
+  Export(name=isEnterKey)
+  Export(name=inputCharFromEvent)
+  Export(name=weatherRemoveLastChar)
+  Export(name=isForbiddenInputChar)
+
+  Let(name=isBackKey) {
+    Fn(params=keyName) {
+      Block { Return { Eq { Call(target=controlKeyName) { Var(name=keyName) } Lit(value="backspace") } } }
+    }
+  }
+
+  Let(name=isEnterKey) {
+    Fn(params=keyName) {
+      Block { Return { Eq { Call(target=controlKeyName) { Var(name=keyName) } Lit(value="enter") } } }
+    }
+  }
+
+  Let(name=inputCharFromEvent) {
+    Fn(params=keyName,textValue) {
+      Block {
+        If {
+          Eq { Var(name=textValue) Lit(value="") }
+          Block { Return { Call(target=keyToText) { Var(name=keyName) } } }
+          Block { Return { Var(name=textValue) } }
+        }
+      }
+    }
+  }
+
+  Let(name=weatherRemoveLastChar) {
+    Fn(params=textValue) {
+      Block {
+        If {
+          Eq { Var(name=textValue) Lit(value="") }
+          Block { Return { Lit(value="") } }
+          Block {
+            Let(name=len) { Call(target=textLen) { Var(name=textValue) } }
+            Return {
+              Call(target=substring) {
+                Var(name=textValue)
+                Lit(value=0)
+                Call(target=sub) { Var(name=len) Lit(value=1) }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=isForbiddenInputChar) {
+    Fn(params=textValue) {
+      Block {
+        If { Eq { Var(name=textValue) Lit(value="	") } Block { Return { Lit(value=true) } } Block {
+          If { Eq { Var(name=textValue) Lit(value="
+") } Block { Return { Lit(value=true) } } Block {
+            If { Eq { Var(name=textValue) Lit(value="
+") } Block { Return { Lit(value=true) } } Block { Return { Lit(value=false) } } }
+          } }
+        } }
+      }
+    }
+  }
+}
