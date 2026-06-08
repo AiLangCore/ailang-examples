@@ -24,6 +24,7 @@ Program {
   Export(name=weatherWithQuery)
   Export(name=weatherWithFocus)
   Export(name=weatherWithStatus)
+  Export(name=weatherWithSize)
 
   Let(name=weatherState) {
     Fn(params=query,focused,dropdownOpen,geoBody,selectedLabel,selectedLat,selectedLon,forecastBody,statusLine,radarOpen,radarTick,width,height,submitFlash,blinkTick,netKind,netState,netTicks) {
@@ -178,6 +179,35 @@ Program {
             Call(target=weatherRadarTick) { Var(name=state) }
             Call(target=weatherWidth) { Var(name=state) }
             Call(target=weatherHeight) { Var(name=state) }
+            Call(target=weatherSubmitFlash) { Var(name=state) }
+            Call(target=weatherBlinkTick) { Var(name=state) }
+            Call(target=weatherNetKind) { Var(name=state) }
+            Call(target=weatherNetState) { Var(name=state) }
+            Call(target=weatherNetTicks) { Var(name=state) }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=weatherWithSize) {
+    Fn(params=state,width,height) {
+      Block {
+        Return {
+          Call(target=weatherState) {
+            Call(target=weatherQuery) { Var(name=state) }
+            Call(target=weatherFocused) { Var(name=state) }
+            Call(target=weatherDropdownOpen) { Var(name=state) }
+            Call(target=weatherGeoBody) { Var(name=state) }
+            Call(target=weatherSelectedLabel) { Var(name=state) }
+            Call(target=weatherSelectedLat) { Var(name=state) }
+            Call(target=weatherSelectedLon) { Var(name=state) }
+            Call(target=weatherForecastBody) { Var(name=state) }
+            Call(target=weatherStatusLine) { Var(name=state) }
+            Call(target=weatherRadarOpen) { Var(name=state) }
+            Call(target=weatherRadarTick) { Var(name=state) }
+            Var(name=width)
+            Var(name=height)
             Call(target=weatherSubmitFlash) { Var(name=state) }
             Call(target=weatherBlinkTick) { Var(name=state) }
             Call(target=weatherNetKind) { Var(name=state) }

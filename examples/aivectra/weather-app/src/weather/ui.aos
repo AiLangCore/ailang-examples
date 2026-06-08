@@ -119,17 +119,28 @@ Program {
           Block { Lit(value=0) }
         }
 
+        Let(name=forecastY) { Lit(value=210) }
+        Let(name=forecastBottom) { Add { Var(name=h) Lit(value=-56) } }
+        Let(name=forecastHRaw) { Call(target=sub) { Var(name=forecastBottom) Var(name=forecastY) } }
+        Let(name=forecastH) {
+          If {
+            Call(target=intLt) { Var(name=forecastHRaw) Lit(value=96) }
+            Block { Lit(value=96) }
+            Block { Var(name=forecastHRaw) }
+          }
+        }
+        Let(name=forecastW) { Add { Var(name=w) Lit(value=-80) } }
         Call(target=interactiveVectorState) {
-          Var(name=handle) Lit(value=40) Lit(value=250) Add { Var(name=w) Lit(value=-80) } Lit(value=120)
+          Var(name=handle) Lit(value=40) Var(name=forecastY) Var(name=forecastW) Var(name=forecastH)
           Lit(value="normal") Lit(value="rect") Lit(value="") Lit(value="#1e293b") Lit(value="#1e293b") Lit(value="#334155") Lit(value="#1e293b") Lit(value="#0f172a")
         }
         Call(target=sys.ui.drawText) {
-          Var(name=handle) Lit(value=56) Lit(value=262)
+          Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=12) }
           If { Eq { Var(name=selectedLabel) Lit(value="") } Block { Lit(value="Current: (no location loaded)") } Block { StrConcat { Lit(value="Current: ") Var(name=selectedLabel) } } }
           Lit(value="#ffffff") Lit(value=18)
         }
         Call(target=sys.ui.drawText) {
-          Var(name=handle) Lit(value=56) Lit(value=292)
+          Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=42) }
           If { Eq { Var(name=forecastBody) Lit(value="") } Block { Lit(value="Submit a location to fetch weather.") } Block { Call(target=currentLineFromForecast) { Var(name=forecastBody) } } }
           Lit(value="#cbd5e1") Lit(value=16)
         }
@@ -138,22 +149,22 @@ Program {
           Eq { Var(name=forecastBody) Lit(value="") }
           Block { Lit(value=0) }
           Block {
-            Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Lit(value=338) Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=1) } Lit(value="#e2e8f0") Lit(value=14) }
-            Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Lit(value=358) Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=2) } Lit(value="#e2e8f0") Lit(value=14) }
-            Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Lit(value=378) Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=3) } Lit(value="#e2e8f0") Lit(value=14) }
-            Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Lit(value=398) Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=4) } Lit(value="#e2e8f0") Lit(value=14) }
-            Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Lit(value=418) Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=5) } Lit(value="#e2e8f0") Lit(value=14) }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=92) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=76) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=1) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=112) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=96) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=2) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=132) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=116) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=3) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=152) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=136) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=4) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=172) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=156) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=5) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
             Lit(value=0)
           }
         }
 
         Let(name=radarX) { Add { Var(name=w) Lit(value=-188) } }
         Call(target=interactiveVectorState) {
-          Var(name=handle) Var(name=radarX) Lit(value=254) Lit(value=132) Lit(value=40)
+          Var(name=handle) Var(name=radarX) Add { Var(name=forecastY) Lit(value=4) } Lit(value=132) Lit(value=40)
           If { Eq { Var(name=radarOpen) Lit(value=true) } Block { Lit(value="pressed") } Block { Lit(value="normal") } }
           Lit(value="rect") Lit(value="") Lit(value="#0891b2") Lit(value="#67e8f9") Lit(value="#06b6d4") Lit(value="#155e75") Lit(value="#64748b")
         }
-        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=w) Lit(value=-164) } Lit(value=264) Lit(value="Radar") Lit(value="#ecfeff") Lit(value=17) }
+        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=w) Lit(value=-164) } Add { Var(name=forecastY) Lit(value=14) } Lit(value="Radar") Lit(value="#ecfeff") Lit(value=17) }
         If {
           Eq { Var(name=radarOpen) Lit(value=true) }
           Block {

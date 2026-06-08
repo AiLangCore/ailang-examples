@@ -276,6 +276,27 @@ Program {
         Let(name=eventText) { Call(target=eventTextOf) { Var(name=rawEvent) } }
         Let(name=eventX) { Call(target=eventXOf) { Var(name=rawEvent) } }
         Let(name=eventY) { Call(target=eventYOf) { Var(name=rawEvent) } }
+        Let(name=eventWidth) { Call(target=eventWidthOf) { Var(name=rawEvent) } }
+        Let(name=eventHeight) { Call(target=eventHeightOf) { Var(name=rawEvent) } }
+        Let(name=sizedState) {
+          If {
+            Call(target=intLt) { Lit(value=0) Var(name=eventWidth) }
+            Block {
+              If {
+                Call(target=intLt) { Lit(value=0) Var(name=eventHeight) }
+                Block { Call(target=weatherWithSize) { Var(name=state) Var(name=eventWidth) Var(name=eventHeight) } }
+                Block { Var(name=state) }
+              }
+            }
+            Block { Var(name=state) }
+          }
+        }
+        Let(name=state) { Var(name=sizedState) }
+        If {
+          Eq { Var(name=eventTypeRaw) Lit(value="resize") }
+          Block { Return { Var(name=state) } }
+          Block { Lit(value=0) }
+        }
         If {
           Eq { Var(name=eventTypeRaw) Lit(value="click") }
           Block {
