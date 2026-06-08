@@ -298,7 +298,7 @@ Program {
           Block { Lit(value=0) }
         }
         If {
-          Eq { Var(name=eventTypeRaw) Lit(value="key") }
+          Call(target=eventIsKeyboardLike) { Var(name=rawEvent) }
           Block {
             If {
               Eq { Call(target=weatherFocused) { Var(name=state) } Lit(value=true) }
