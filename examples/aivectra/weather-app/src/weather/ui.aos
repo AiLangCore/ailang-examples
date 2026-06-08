@@ -33,6 +33,7 @@ Program {
         }
 
         Call(target=sys.ui.beginFrame) { Var(name=handle) }
+        Call(target=sys.ui.drawRect) { Var(name=handle) Lit(value=0) Lit(value=0) Var(name=w) Var(name=h) Lit(value="#0f172a") }
         Call(target=sys.ui.drawRect) { Var(name=handle) Lit(value=20) Lit(value=20) Add { Var(name=w) Lit(value=-40) } Add { Var(name=h) Lit(value=-40) } Lit(value="#0f172a") }
 
         Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=40) Lit(value=40) Lit(value="Weather App") Lit(value="#ffffff") Lit(value=26) }
