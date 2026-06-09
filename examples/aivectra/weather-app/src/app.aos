@@ -257,7 +257,11 @@ Program {
             Call(target=weatherRadarTick) { Var(name=state) }
             Call(target=weatherWidth) { Var(name=state) }
             Call(target=weatherHeight) { Var(name=state) }
-            Call(target=weatherSubmitFlash) { Var(name=state) }
+            If {
+              Call(target=intLt) { Lit(value=0) Call(target=weatherSubmitFlash) { Var(name=state) } }
+              Block { Add { Call(target=weatherSubmitFlash) { Var(name=state) } Lit(value=-1) } }
+              Block { Lit(value=0) }
+            }
             Call(target=weatherBlinkTick) { Var(name=state) }
             Var(name=netKind)
             Var(name=netStateNow)
@@ -299,7 +303,7 @@ Program {
             Let(name=entryW) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-220) } }
             Let(name=submitX) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-168) } }
             Let(name=inputElement) {
-              Call(target=entryElement) {
+              Call(target=entryElementWithCaret) {
                 Lit(value="weather.query")
                 Lit(value=40)
                 Lit(value=74)
@@ -310,6 +314,8 @@ Program {
                 Lit(value="e.g. Springfield or 10001")
                 Call(target=weatherFocused) { Var(name=state) }
                 If { Eq { Call(target=weatherFocused) { Var(name=state) } Lit(value=true) } Block { Lit(value="focused") } Block { Lit(value="normal") } }
+                Call(target=textLen) { Call(target=weatherQuery) { Var(name=state) } }
+                Lit(value=false)
               }
             }
             Let(name=submitElement) {
