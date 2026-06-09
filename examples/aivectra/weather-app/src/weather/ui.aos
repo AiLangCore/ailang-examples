@@ -110,11 +110,12 @@ Program {
           }
         }
 
+        Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=40) Lit(value=156) Lit(value="Units") Lit(value="#94a3b8") Lit(value=14) }
         Call(target=renderElement) {
           Var(name=handle)
           Call(target=radioElement) {
             Lit(value="weather.unit.c")
-            Lit(value=40)
+            Lit(value=96)
             Lit(value=154)
             Lit(value="Celsius")
             Lit(value=58)
@@ -126,7 +127,7 @@ Program {
           Var(name=handle)
           Call(target=radioElement) {
             Lit(value="weather.unit.f")
-            Lit(value=142)
+            Lit(value=204)
             Lit(value=154)
             Lit(value="Fahrenheit")
             Lit(value=86)
