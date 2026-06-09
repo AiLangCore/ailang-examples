@@ -77,23 +77,17 @@ Program {
             If {
               Call(target=contains) { Var(name=statusLine) Lit(value="Loading") }
               Block {
-                Call(target=interactiveVectorState) {
+                Call(target=renderElement) {
                   Var(name=handle)
-                  Var(name=submitX) Lit(value=92) Lit(value=140) Lit(value=44)
-                  Lit(value="normal")
-                  Lit(value="rect") Lit(value="") Lit(value="#334155") Lit(value="#64748b") Lit(value="#475569") Lit(value="#1e293b") Lit(value="#475569")
-                }
-                Call(target=sys.ui.drawRect) {
-                  Var(name=handle) Add { Var(name=submitX) Lit(value=54) } Lit(value=110) Lit(value=8) Lit(value=8)
-                  If { Eq { Var(name=caretVisible) Lit(value=true) } Block { Lit(value="#93c5fd") } Block { Lit(value="#475569") } }
-                }
-                Call(target=sys.ui.drawRect) {
-                  Var(name=handle) Add { Var(name=submitX) Lit(value=68) } Lit(value=110) Lit(value=8) Lit(value=8)
-                  If { Eq { Var(name=caretVisible) Lit(value=true) } Block { Lit(value="#475569") } Block { Lit(value="#93c5fd") } }
-                }
-                Call(target=sys.ui.drawRect) {
-                  Var(name=handle) Add { Var(name=submitX) Lit(value=82) } Lit(value=110) Lit(value=8) Lit(value=8)
-                  Lit(value="#475569")
+                  Call(target=buttonElement) {
+                    Lit(value="weather.submit")
+                    Var(name=submitX)
+                    Lit(value=92)
+                    Lit(value=140)
+                    Lit(value=44)
+                    Lit(value="Loading")
+                    Lit(value="busy")
+                  }
                 }
                 Lit(value=0)
               }
