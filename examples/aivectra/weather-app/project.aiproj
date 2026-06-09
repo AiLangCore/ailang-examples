@@ -3,6 +3,7 @@ Program {
     name="WeatherApp"
     entryFile="src/app.aos"
     entryExport="start"
+    runTool="aivectra"
   ) {
     Include(name="aivectra")
     Include(name="vectra-ui")

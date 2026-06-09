@@ -6,14 +6,16 @@ forecast APIs.
 ## Run
 
 ```bash
-ailang package restore
-ailang build .
 ailang run .
 ```
 
 The app opens an AiVectra window, accepts a city or ZIP-style query, fetches
 matching locations from Open-Meteo, and loads the selected forecast from live
 Open-Meteo data.
+
+The project manifest declares `runTool="aivectra"`, so `ailang run .`
+restores packages when needed and delegates to the installed `aivectra` tool.
+Use `ailang aivectra ...` only for explicit AiVectra tool commands.
 
 ## Structure
 
