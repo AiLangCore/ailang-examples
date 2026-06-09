@@ -34,7 +34,7 @@ Program {
   }
 
   Let(name=fetchForecastPath) {
-    Fn(params=lat,lon) {
+    Fn(params=lat,lon,temperatureUnit) {
       Block {
         Return {
           StrConcat {
@@ -45,7 +45,10 @@ Program {
                 Lit(value="&longitude=")
                 StrConcat {
                   Var(name=lon)
-                  Lit(value="&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5")
+                  StrConcat {
+                    Lit(value="&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5&temperature_unit=")
+                    If { Eq { Var(name=temperatureUnit) Lit(value="f") } Block { Lit(value="fahrenheit") } Block { Lit(value="celsius") } }
+                  }
                 }
               }
             }
@@ -82,9 +85,9 @@ Program {
   }
 
   Let(name=startForecastRequest) {
-    Fn(params=lat,lon) {
+    Fn(params=lat,lon,temperatureUnit) {
       Block {
-        Return { Call(target=startHttpGet) { Lit(value="api.open-meteo.com") Call(target=fetchForecastPath) { Var(name=lat) Var(name=lon) } } }
+        Return { Call(target=startHttpGet) { Lit(value="api.open-meteo.com") Call(target=fetchForecastPath) { Var(name=lat) Var(name=lon) Var(name=temperatureUnit) } } }
       }
     }
   }

@@ -7,7 +7,7 @@ Program {
   Export(name=renderWeatherFrame)
 
   Let(name=renderWeatherFrame) {
-    Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible) {
+    Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible,temperatureUnit) {
       Block {
         Let(name=entryW) { Add { Var(name=w) Lit(value=-220) } }
         Let(name=submitX) { Add { Var(name=w) Lit(value=-168) } }
@@ -110,6 +110,31 @@ Program {
           }
         }
 
+        Call(target=renderElement) {
+          Var(name=handle)
+          Call(target=radioElement) {
+            Lit(value="weather.unit.c")
+            Lit(value=40)
+            Lit(value=154)
+            Lit(value="Celsius")
+            Lit(value=58)
+            Eq { Var(name=temperatureUnit) Lit(value="c") }
+            Lit(value="normal")
+          }
+        }
+        Call(target=renderElement) {
+          Var(name=handle)
+          Call(target=radioElement) {
+            Lit(value="weather.unit.f")
+            Lit(value=142)
+            Lit(value=154)
+            Lit(value="Fahrenheit")
+            Lit(value=86)
+            Eq { Var(name=temperatureUnit) Lit(value="f") }
+            Lit(value="normal")
+          }
+        }
+
         If {
           Eq { Var(name=dropdownOpen) Lit(value=true) }
           Block {
@@ -126,7 +151,7 @@ Program {
           Block { Lit(value=0) }
         }
 
-        Let(name=forecastY) { Lit(value=210) }
+        Let(name=forecastY) { Lit(value=196) }
         Let(name=forecastBottom) { Add { Var(name=h) Lit(value=-56) } }
         Let(name=forecastHRaw) { Call(target=sub) { Var(name=forecastBottom) Var(name=forecastY) } }
         Let(name=forecastH) {
@@ -148,7 +173,7 @@ Program {
         }
         Call(target=sys.ui.drawText) {
           Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=42) }
-          If { Eq { Var(name=forecastBody) Lit(value="") } Block { Lit(value="Submit a location to fetch weather.") } Block { Call(target=currentLineFromForecast) { Var(name=forecastBody) } } }
+          If { Eq { Var(name=forecastBody) Lit(value="") } Block { Lit(value="Submit a location to fetch weather.") } Block { Call(target=currentLineFromForecast) { Var(name=forecastBody) Var(name=temperatureUnit) } } }
           Lit(value="#cbd5e1") Lit(value=16)
         }
 
@@ -156,11 +181,11 @@ Program {
           Eq { Var(name=forecastBody) Lit(value="") }
           Block { Lit(value=0) }
           Block {
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=92) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=76) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=1) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=112) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=96) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=2) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=132) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=116) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=3) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=152) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=136) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=4) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=172) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=156) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=5) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=92) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=76) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=1) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=112) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=96) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=2) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=132) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=116) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=3) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=152) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=136) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=4) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=forecastH) Lit(value=172) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=156) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=5) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
             Lit(value=0)
           }
         }

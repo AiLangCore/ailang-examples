@@ -21,13 +21,15 @@ Program {
   Export(name=weatherNetKind)
   Export(name=weatherNetState)
   Export(name=weatherNetTicks)
+  Export(name=weatherTemperatureUnit)
   Export(name=weatherWithQuery)
   Export(name=weatherWithFocus)
   Export(name=weatherWithStatus)
   Export(name=weatherWithSize)
+  Export(name=weatherWithTemperatureUnit)
 
   Let(name=weatherState) {
-    Fn(params=query,focused,dropdownOpen,geoBody,selectedLabel,selectedLat,selectedLon,forecastBody,statusLine,radarOpen,radarTick,width,height,submitFlash,blinkTick,netKind,netState,netTicks) {
+    Fn(params=query,focused,dropdownOpen,geoBody,selectedLabel,selectedLat,selectedLon,forecastBody,statusLine,radarOpen,radarTick,width,height,submitFlash,blinkTick,netKind,netState,netTicks,temperatureUnit) {
       Block {
         Return {
           Map {
@@ -49,6 +51,7 @@ Program {
             Field(key="netKind") { Var(name=netKind) }
             Field(key="netState") { Var(name=netState) }
             Field(key="netTicks") { Var(name=netTicks) }
+            Field(key="temperatureUnit") { Var(name=temperatureUnit) }
           }
         }
       }
@@ -78,6 +81,7 @@ Program {
             Lit(value="")
             Lit(value="")
             Lit(value=0)
+            Lit(value="c")
           }
         }
       }
@@ -102,6 +106,7 @@ Program {
   Let(name=weatherNetKind) { Fn(params=state) { Block { Return { Call(target=mapGetStringOr) { Var(name=state) Lit(value="netKind") Lit(value="") } } } } }
   Let(name=weatherNetState) { Fn(params=state) { Block { Return { Call(target=mapGetNodeOr) { Var(name=state) Lit(value="netState") Map { } } } } } }
   Let(name=weatherNetTicks) { Fn(params=state) { Block { Return { Call(target=mapGetIntOr) { Var(name=state) Lit(value="netTicks") Lit(value=0) } } } } }
+  Let(name=weatherTemperatureUnit) { Fn(params=state) { Block { Return { Call(target=mapGetStringOr) { Var(name=state) Lit(value="temperatureUnit") Lit(value="c") } } } } }
 
   Let(name=weatherWithQuery) {
     Fn(params=state,query) {
@@ -126,6 +131,7 @@ Program {
             Call(target=weatherNetKind) { Var(name=state) }
             Call(target=weatherNetState) { Var(name=state) }
             Call(target=weatherNetTicks) { Var(name=state) }
+            Call(target=weatherTemperatureUnit) { Var(name=state) }
           }
         }
       }
@@ -155,6 +161,7 @@ Program {
             Call(target=weatherNetKind) { Var(name=state) }
             Call(target=weatherNetState) { Var(name=state) }
             Call(target=weatherNetTicks) { Var(name=state) }
+            Call(target=weatherTemperatureUnit) { Var(name=state) }
           }
         }
       }
@@ -184,6 +191,7 @@ Program {
             Call(target=weatherNetKind) { Var(name=state) }
             Call(target=weatherNetState) { Var(name=state) }
             Call(target=weatherNetTicks) { Var(name=state) }
+            Call(target=weatherTemperatureUnit) { Var(name=state) }
           }
         }
       }
@@ -213,8 +221,17 @@ Program {
             Call(target=weatherNetKind) { Var(name=state) }
             Call(target=weatherNetState) { Var(name=state) }
             Call(target=weatherNetTicks) { Var(name=state) }
+            Call(target=weatherTemperatureUnit) { Var(name=state) }
           }
         }
+      }
+    }
+  }
+
+  Let(name=weatherWithTemperatureUnit) {
+    Fn(params=state,temperatureUnit) {
+      Block {
+        Return { Call(target=mapSet) { Var(name=state) Lit(value="temperatureUnit") Var(name=temperatureUnit) } }
       }
     }
   }

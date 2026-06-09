@@ -45,6 +45,7 @@ Program {
             Call(target=weatherHeight) { Var(name=state) }
             Call(target=weatherSubmitFlash) { Var(name=state) }
             Lit(value=true)
+            Call(target=weatherTemperatureUnit) { Var(name=state) }
           }
         }
       }
@@ -80,6 +81,7 @@ Program {
                 Lit(value="geo")
                 Var(name=reqState)
                 Lit(value=0)
+                Call(target=weatherTemperatureUnit) { Var(name=state) }
               }
             }
           }
@@ -94,7 +96,7 @@ Program {
         Let(name=lat) { Call(target=geoLatAt) { Var(name=geoBody) Var(name=index) } }
         Let(name=lon) { Call(target=geoLonAt) { Var(name=geoBody) Var(name=index) } }
         Let(name=label) { Call(target=geoLabelAt) { Var(name=geoBody) Var(name=index) } }
-        Let(name=reqState) { Call(target=startForecastRequest) { Var(name=lat) Var(name=lon) } }
+        Let(name=reqState) { Call(target=startForecastRequest) { Var(name=lat) Var(name=lon) Call(target=weatherTemperatureUnit) { Var(name=state) } } }
         Return {
           Call(target=weatherState) {
             Call(target=weatherQuery) { Var(name=state) }
@@ -115,6 +117,7 @@ Program {
             Lit(value="forecast")
             Var(name=reqState)
             Lit(value=0)
+            Call(target=weatherTemperatureUnit) { Var(name=state) }
           }
         }
       }
@@ -202,6 +205,7 @@ Program {
                             Lit(value="")
                             Map { }
                             Lit(value=0)
+                            Call(target=weatherTemperatureUnit) { Var(name=state) }
                           }
                         }
                       }
@@ -235,6 +239,7 @@ Program {
                     Lit(value="")
                     Map { }
                     Lit(value=0)
+                    Call(target=weatherTemperatureUnit) { Var(name=state) }
                   }
                 }
               }
@@ -266,6 +271,56 @@ Program {
             Var(name=netKind)
             Var(name=netStateNow)
             Var(name=netTicksNow)
+            Call(target=weatherTemperatureUnit) { Var(name=state) }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=weatherChangeTemperatureUnit) {
+    Fn(params=state,temperatureUnit) {
+      Block {
+        If {
+          Eq { Call(target=weatherTemperatureUnit) { Var(name=state) } Var(name=temperatureUnit) }
+          Block { Return { Var(name=state) } }
+          Block { Lit(value=0) }
+        }
+        Let(name=updatedState) { Call(target=weatherWithTemperatureUnit) { Var(name=state) Var(name=temperatureUnit) } }
+        Let(name=lat) { Call(target=weatherSelectedLat) { Var(name=state) } }
+        Let(name=lon) { Call(target=weatherSelectedLon) { Var(name=state) } }
+        If {
+          Eq { Var(name=lat) Lit(value="") }
+          Block { Return { Var(name=updatedState) } }
+          Block { Lit(value=0) }
+        }
+        If {
+          Eq { Call(target=weatherNetKind) { Var(name=state) } Lit(value="") }
+          Block { Lit(value=0) }
+          Block { Call(target=sys.net.asyncCancel) { Call(target=httpRequestOp) { Call(target=weatherNetState) { Var(name=state) } } } Lit(value=0) }
+        }
+        Let(name=reqState) { Call(target=startForecastRequest) { Var(name=lat) Var(name=lon) Var(name=temperatureUnit) } }
+        Return {
+          Call(target=weatherState) {
+            Call(target=weatherQuery) { Var(name=updatedState) }
+            Call(target=weatherFocused) { Var(name=updatedState) }
+            Lit(value=false)
+            Lit(value="")
+            Call(target=weatherSelectedLabel) { Var(name=updatedState) }
+            Var(name=lat)
+            Var(name=lon)
+            Call(target=weatherForecastBody) { Var(name=updatedState) }
+            Lit(value="Updating temperature units...")
+            Call(target=weatherRadarOpen) { Var(name=updatedState) }
+            Call(target=weatherRadarTick) { Var(name=updatedState) }
+            Call(target=weatherWidth) { Var(name=updatedState) }
+            Call(target=weatherHeight) { Var(name=updatedState) }
+            Lit(value=0)
+            Lit(value=0)
+            Lit(value="forecast")
+            Var(name=reqState)
+            Lit(value=0)
+            Var(name=temperatureUnit)
           }
         }
       }
@@ -329,16 +384,44 @@ Program {
                 If { Call(target=intLt) { Lit(value=0) Call(target=weatherSubmitFlash) { Var(name=state) } } Block { Lit(value="pressed") } Block { Lit(value="normal") } }
               }
             }
+            Let(name=celsiusElement) {
+              Call(target=radioElement) {
+                Lit(value="weather.unit.c") Lit(value=40) Lit(value=154) Lit(value="Celsius") Lit(value=58)
+                Eq { Call(target=weatherTemperatureUnit) { Var(name=state) } Lit(value="c") }
+                Lit(value="normal")
+              }
+            }
+            Let(name=fahrenheitElement) {
+              Call(target=radioElement) {
+                Lit(value="weather.unit.f") Lit(value=142) Lit(value=154) Lit(value="Fahrenheit") Lit(value=86)
+                Eq { Call(target=weatherTemperatureUnit) { Var(name=state) } Lit(value="f") }
+                Lit(value="normal")
+              }
+            }
             Let(name=inputHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=inputElement) } }
             Let(name=submitHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=submitElement) } }
+            Let(name=celsiusHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=celsiusElement) } }
+            Let(name=fahrenheitHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=fahrenheitElement) } }
             If {
-              Eq { Var(name=submitHit) Lit(value=true) }
-              Block { Return { Call(target=weatherSubmitState) { Var(name=state) } } }
+              Eq { Var(name=celsiusHit) Lit(value=true) }
+              Block { Return { Call(target=weatherChangeTemperatureUnit) { Var(name=state) Lit(value="c") } } }
               Block {
                 If {
-                  Eq { Var(name=inputHit) Lit(value=true) }
-                  Block { Return { Call(target=weatherWithFocus) { Var(name=state) Lit(value=true) Call(target=weatherDropdownOpen) { Var(name=state) } } } }
-                  Block { Return { Call(target=weatherWithFocus) { Var(name=state) Lit(value=false) Lit(value=false) } } }
+                  Eq { Var(name=fahrenheitHit) Lit(value=true) }
+                  Block { Return { Call(target=weatherChangeTemperatureUnit) { Var(name=state) Lit(value="f") } } }
+                  Block {
+                    If {
+                      Eq { Var(name=submitHit) Lit(value=true) }
+                      Block { Return { Call(target=weatherSubmitState) { Var(name=state) } } }
+                      Block {
+                        If {
+                          Eq { Var(name=inputHit) Lit(value=true) }
+                          Block { Return { Call(target=weatherWithFocus) { Var(name=state) Lit(value=true) Call(target=weatherDropdownOpen) { Var(name=state) } } } }
+                          Block { Return { Call(target=weatherWithFocus) { Var(name=state) Lit(value=false) Lit(value=false) } } }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }

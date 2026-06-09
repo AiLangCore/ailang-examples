@@ -11,7 +11,8 @@ ailang run .
 
 The app opens an AiVectra window, accepts a city or ZIP-style query, fetches
 matching locations from Open-Meteo, and loads the selected forecast from live
-Open-Meteo data.
+Open-Meteo data. Celsius and Fahrenheit radio controls request the selected
+temperature unit directly from Open-Meteo.
 
 The project manifest declares `runTool="aivectra"`, so `ailang run .`
 restores packages when needed and delegates to the installed `aivectra` tool.
