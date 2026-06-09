@@ -10,3 +10,4 @@ out/
 *.log
 packages/
 ailang.lock.toml
+config.local.toml
