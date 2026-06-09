@@ -1,12 +1,12 @@
 Program {
   Import(package="aivectra" path="src/AiVectra/src/app.aos")
   Import(package="aivectra" path="src/AiVectra/src/lib.aos")
+  Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(package="std-http" path="src/net/http.aos")
   Import(sdk="ailang" path="std/str.aos")
   Import(path="weather/text.aos")
   Import(path="weather/http.aos")
   Import(path="weather/parse.aos")
-  Import(path="weather/input.aos")
   Import(path="weather/state.aos")
   Import(path="weather/ui.aos")
   Export(name=start)
@@ -272,10 +272,6 @@ Program {
     Fn(params=state,rawEvent) {
       Block {
         Let(name=eventTypeRaw) { Call(target=eventTypeOf) { Var(name=rawEvent) } }
-        Let(name=eventKey) { Call(target=eventKeyOf) { Var(name=rawEvent) } }
-        Let(name=eventText) { Call(target=eventTextOf) { Var(name=rawEvent) } }
-        Let(name=eventX) { Call(target=eventXOf) { Var(name=rawEvent) } }
-        Let(name=eventY) { Call(target=eventYOf) { Var(name=rawEvent) } }
         Let(name=eventWidth) { Call(target=eventWidthOf) { Var(name=rawEvent) } }
         Let(name=eventHeight) { Call(target=eventHeightOf) { Var(name=rawEvent) } }
         Let(name=sizedState) {
@@ -302,8 +298,33 @@ Program {
           Block {
             Let(name=entryW) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-220) } }
             Let(name=submitX) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-168) } }
-            Let(name=inputHit) { Call(target=pointInRect) { Var(name=eventX) Var(name=eventY) Lit(value=40) Lit(value=92) Var(name=entryW) Lit(value=44) } }
-            Let(name=submitHit) { Call(target=pointInRect) { Var(name=eventX) Var(name=eventY) Var(name=submitX) Lit(value=92) Lit(value=140) Lit(value=44) } }
+            Let(name=inputElement) {
+              Call(target=entryElement) {
+                Lit(value="weather.query")
+                Lit(value=40)
+                Lit(value=74)
+                Var(name=entryW)
+                Lit(value=44)
+                Lit(value="ZIP, city, or city,state")
+                Call(target=weatherQuery) { Var(name=state) }
+                Lit(value="e.g. Springfield or 10001")
+                Call(target=weatherFocused) { Var(name=state) }
+                If { Eq { Call(target=weatherFocused) { Var(name=state) } Lit(value=true) } Block { Lit(value="focused") } Block { Lit(value="normal") } }
+              }
+            }
+            Let(name=submitElement) {
+              Call(target=buttonElement) {
+                Lit(value="weather.submit")
+                Var(name=submitX)
+                Lit(value=92)
+                Lit(value=140)
+                Lit(value=44)
+                Lit(value="Submit")
+                If { Call(target=intLt) { Lit(value=0) Call(target=weatherSubmitFlash) { Var(name=state) } } Block { Lit(value="pressed") } Block { Lit(value="normal") } }
+              }
+            }
+            Let(name=inputHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=inputElement) } }
+            Let(name=submitHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=submitElement) } }
             If {
               Eq { Var(name=submitHit) Lit(value=true) }
               Block { Return { Call(target=weatherSubmitState) { Var(name=state) } } }
@@ -325,33 +346,22 @@ Program {
               Eq { Call(target=weatherFocused) { Var(name=state) } Lit(value=true) }
               Block {
                 If {
-                  Call(target=isBackKey) { Var(name=eventKey) }
-                  Block { Return { Call(target=weatherWithQuery) { Var(name=state) Call(target=weatherRemoveLastChar) { Call(target=weatherQuery) { Var(name=state) } } } } }
+                  Call(target=entryShouldSubmit) { Var(name=rawEvent) Lit(value=false) }
+                  Block { Return { Call(target=weatherSubmitState) { Var(name=state) } } }
                   Block {
-                    If {
-                      Call(target=isEnterKey) { Var(name=eventKey) }
-                      Block { Return { Call(target=weatherSubmitState) { Var(name=state) } } }
-                      Block {
-                        Let(name=typed) { Call(target=inputCharFromEvent) { Var(name=eventKey) Var(name=eventText) } }
-                        If {
-                          Eq { Var(name=typed) Lit(value="") }
-                          Block { Return { Var(name=state) } }
-                          Block {
-                            If {
-                              Call(target=isForbiddenInputChar) { Var(name=typed) }
-                              Block { Return { Var(name=state) } }
-                              Block {
-                                Return {
-                                  Call(target=weatherWithQuery) {
-                                    Var(name=state)
-                                    StrConcat { Call(target=weatherQuery) { Var(name=state) } Var(name=typed) }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
+                    Let(name=nextQuery) {
+                      Call(target=entryNextText) {
+                        Call(target=weatherQuery) { Var(name=state) }
+                        Call(target=textLen) { Call(target=weatherQuery) { Var(name=state) } }
+                        Var(name=rawEvent)
+                        Lit(value=false)
+                        Lit(value=false)
                       }
+                    }
+                    If {
+                      Eq { Var(name=nextQuery) Call(target=weatherQuery) { Var(name=state) } }
+                      Block { Return { Var(name=state) } }
+                      Block { Return { Call(target=weatherWithQuery) { Var(name=state) Var(name=nextQuery) } } }
                     }
                   }
                 }
