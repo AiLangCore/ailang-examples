@@ -23,6 +23,8 @@ src/weather/ui.aos     # Weather-specific layout using vectra-ui controls
 src/weather/text.aos   # focused string/search helpers
 src/weather/http.aos   # Open-Meteo request paths and HTTP boundary
 src/weather/parse.aos  # geocode and forecast response parsing
+Assets/icons/          # standard AiVectra app icon metadata
+Targets/               # target-specific app metadata
 ```
 
 ## Dependencies

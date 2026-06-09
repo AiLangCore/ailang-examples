@@ -1,0 +1,4 @@
+name = "Weather"
+exec = "ailang run ./examples/aivectra/weather-app/"
+icon = "app"
+categories = ["Utility", "Network"]

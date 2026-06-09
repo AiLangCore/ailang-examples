@@ -1,0 +1,3 @@
+bundle_id = "org.aivectra.weather"
+display_name = "Weather"
+version = "0.0.1"
