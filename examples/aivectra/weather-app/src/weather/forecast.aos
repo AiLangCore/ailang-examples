@@ -1,0 +1,193 @@
+Program {
+  Import(sdk="ailang" path="std/math.aos")
+  Import(path="text.aos")
+  Import(path="parse.aos")
+
+  Export(name=renderForecastCards)
+
+  Let(name=forecastDailyValue) {
+    Fn(params=forecastBody,key,dayIndex) {
+      Block {
+        Let(name=dailyStart) { Call(target=findFrom) { Var(name=forecastBody) Lit(value="\"daily\":{") Lit(value=0) } }
+        If {
+          Call(target=lt) { Var(name=dailyStart) Lit(value=0) }
+          Block { Return { Lit(value="") } }
+          Block {
+            Return {
+              Call(target=csvNth) {
+                Call(target=arrayListForKey) { Var(name=forecastBody) Var(name=key) Var(name=dailyStart) }
+                Var(name=dayIndex)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=forecastDayLabel) {
+    Fn(params=dayIndex) {
+      Block {
+        If { Eq { Var(name=dayIndex) Lit(value=1) } Block { Return { Lit(value="Today") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=dayIndex) Lit(value=2) } Block { Return { Lit(value="+1 day") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=dayIndex) Lit(value=3) } Block { Return { Lit(value="+2 days") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=dayIndex) Lit(value=4) } Block { Return { Lit(value="+3 days") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=dayIndex) Lit(value=5) } Block { Return { Lit(value="+4 days") } } Block { Lit(value=0) } }
+        Return { Lit(value="+5 days") }
+      }
+    }
+  }
+
+  Let(name=forecastConditionShort) {
+    Fn(params=code) {
+      Block {
+        If { Eq { Var(name=code) Lit(value="0") } Block { Return { Lit(value="Sunny") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="1") } Block { Return { Lit(value="Mostly sun") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="2") } Block { Return { Lit(value="Partly cloudy") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="3") } Block { Return { Lit(value="Cloudy") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="45") } Block { Return { Lit(value="Fog") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="48") } Block { Return { Lit(value="Fog") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="71") } Block { Return { Lit(value="Snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="73") } Block { Return { Lit(value="Snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="75") } Block { Return { Lit(value="Snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="95") } Block { Return { Lit(value="Storms") } } Block { Lit(value=0) } }
+        Return { Lit(value="Rain") }
+      }
+    }
+  }
+
+  Let(name=forecastIconKind) {
+    Fn(params=code) {
+      Block {
+        If { Eq { Var(name=code) Lit(value="0") } Block { Return { Lit(value="sun") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="1") } Block { Return { Lit(value="sun") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="2") } Block { Return { Lit(value="partly") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="3") } Block { Return { Lit(value="cloud") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="45") } Block { Return { Lit(value="cloud") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="48") } Block { Return { Lit(value="cloud") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="71") } Block { Return { Lit(value="snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="73") } Block { Return { Lit(value="snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="75") } Block { Return { Lit(value="snow") } } Block { Lit(value=0) } }
+        Return { Lit(value="rain") }
+      }
+    }
+  }
+
+  Let(name=drawForecastCloud) {
+    Fn(params=handle,x,y,color) {
+      Block {
+        Call(target=sys.ui.drawEllipse) { Var(name=handle) Var(name=x) Add { Var(name=y) Lit(value=18) } Lit(value=48) Lit(value=22) Var(name=color) }
+        Call(target=sys.ui.drawEllipse) { Var(name=handle) Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=8) } Lit(value=28) Lit(value=28) Var(name=color) }
+        Call(target=sys.ui.drawEllipse) { Var(name=handle) Add { Var(name=x) Lit(value=32) } Add { Var(name=y) Lit(value=14) } Lit(value=24) Lit(value=24) Var(name=color) }
+        Return { Lit(value=0) }
+      }
+    }
+  }
+
+  Let(name=drawForecastIcon) {
+    Fn(params=handle,x,y,kind) {
+      Block {
+        If {
+          Eq { Var(name=kind) Lit(value="sun") }
+          Block {
+            Call(target=sys.ui.drawEllipse) { Var(name=handle) Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=10) } Lit(value=32) Lit(value=32) Lit(value="#facc15") }
+            Call(target=sys.ui.drawLine) { Var(name=handle) Add { Var(name=x) Lit(value=30) } Var(name=y) Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=7) } Lit(value="#fde68a") Lit(value=2) }
+            Call(target=sys.ui.drawLine) { Var(name=handle) Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=45) } Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=52) } Lit(value="#fde68a") Lit(value=2) }
+            Return { Lit(value=0) }
+          }
+          Block {
+            If {
+              Eq { Var(name=kind) Lit(value="partly") }
+              Block {
+                Call(target=sys.ui.drawEllipse) { Var(name=handle) Add { Var(name=x) Lit(value=6) } Add { Var(name=y) Lit(value=6) } Lit(value=30) Lit(value=30) Lit(value="#facc15") }
+                Return { Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=16) } Add { Var(name=y) Lit(value=14) } Lit(value="#cbd5e1") } }
+              }
+              Block {
+                If {
+                  Eq { Var(name=kind) Lit(value="cloud") }
+                  Block { Return { Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=8) } Add { Var(name=y) Lit(value=10) } Lit(value="#cbd5e1") } } }
+                  Block {
+                    If {
+                      Eq { Var(name=kind) Lit(value="snow") }
+                      Block {
+                        Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=8) } Add { Var(name=y) Lit(value=8) } Lit(value="#cbd5e1") }
+                        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=16) } Add { Var(name=y) Lit(value=44) } Lit(value="*  *  *") Lit(value="#bfdbfe") Lit(value=14) }
+                        Return { Lit(value=0) }
+                      }
+                      Block {
+                        Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=8) } Add { Var(name=y) Lit(value=8) } Lit(value="#cbd5e1") }
+                        Call(target=sys.ui.drawLine) { Var(name=handle) Add { Var(name=x) Lit(value=20) } Add { Var(name=y) Lit(value=42) } Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=54) } Lit(value="#38bdf8") Lit(value=2) }
+                        Call(target=sys.ui.drawLine) { Var(name=handle) Add { Var(name=x) Lit(value=34) } Add { Var(name=y) Lit(value=42) } Add { Var(name=x) Lit(value=28) } Add { Var(name=y) Lit(value=54) } Lit(value="#38bdf8") Lit(value=2) }
+                        Return { Lit(value=0) }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=forecastCard) {
+    Fn(params=handle,forecastBody,temperatureUnit,dayIndex,x,y,w,h) {
+      Block {
+        Let(name=maxVal) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"temperature_2m_max\":[") Var(name=dayIndex) } }
+        Let(name=minVal) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"temperature_2m_min\":[") Var(name=dayIndex) } }
+        Let(name=precipVal) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"precipitation_probability_max\":[") Var(name=dayIndex) } }
+        Let(name=code) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"weather_code\":[") Var(name=dayIndex) } }
+        Call(target=sys.ui.drawRect) { Var(name=handle) Var(name=x) Var(name=y) Var(name=w) Var(name=h) Lit(value="#111827") }
+        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=10) } Call(target=forecastDayLabel) { Var(name=dayIndex) } Lit(value="#ffffff") Lit(value=14) }
+        Call(target=drawForecastIcon) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=32) } Call(target=forecastIconKind) { Var(name=code) } }
+        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=94) } Call(target=forecastConditionShort) { Var(name=code) } Lit(value="#cbd5e1") Lit(value=12) }
+        Call(target=sys.ui.drawText) {
+          Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=116) }
+          StrConcat { Var(name=maxVal) StrConcat { Lit(value="/") StrConcat { Var(name=minVal) If { Eq { Var(name=temperatureUnit) Lit(value="f") } Block { Lit(value=" F") } Block { Lit(value=" C") } } } } }
+          Lit(value="#f8fafc") Lit(value=14)
+        }
+        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=140) } StrConcat { Lit(value="Precip ") StrConcat { Var(name=precipVal) Lit(value="%") } } Lit(value="#93c5fd") Lit(value=12) }
+        Return { Lit(value=0) }
+      }
+    }
+  }
+
+  Let(name=renderForecastCards) {
+    Fn(params=handle,forecastBody,temperatureUnit,windowWidth,forecastY,forecastH) {
+      Block {
+        If {
+          Eq { Var(name=forecastBody) Lit(value="") }
+          Block { Return { Lit(value=0) } }
+          Block {
+            If {
+              Call(target=intLt) { Var(name=windowWidth) Lit(value=1180) }
+              Block {
+                If { Call(target=intGte) { Var(name=forecastH) Lit(value=336) } Block {
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=1) Lit(value=56) Add { Var(name=forecastY) Lit(value=86) } Lit(value=164) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=2) Lit(value=238) Add { Var(name=forecastY) Lit(value=86) } Lit(value=164) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=3) Lit(value=420) Add { Var(name=forecastY) Lit(value=86) } Lit(value=164) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=4) Lit(value=56) Add { Var(name=forecastY) Lit(value=264) } Lit(value=164) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=5) Lit(value=238) Add { Var(name=forecastY) Lit(value=264) } Lit(value=164) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=6) Lit(value=420) Add { Var(name=forecastY) Lit(value=264) } Lit(value=164) Lit(value=162) }
+                  Return { Lit(value=0) }
+                } Block { Return { Lit(value=0) } } }
+              }
+              Block {
+                If { Call(target=intGte) { Var(name=forecastH) Lit(value=260) } Block {
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=1) Lit(value=56) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=2) Lit(value=236) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=3) Lit(value=416) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=4) Lit(value=596) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=5) Lit(value=776) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
+                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=6) Lit(value=956) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
+                  Return { Lit(value=0) }
+                } Block { Return { Lit(value=0) } } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

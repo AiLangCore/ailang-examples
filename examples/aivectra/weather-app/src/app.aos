@@ -1,6 +1,7 @@
 Program {
   Import(package="aivectra" path="src/AiVectra/src/app.aos")
   Import(package="aivectra" path="src/AiVectra/src/lib.aos")
+  Import(package="std-app" path="src/app/next.aos")
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(package="std-http" path="src/net/http.aos")
   Import(sdk="ailang" path="std/str.aos")
@@ -46,6 +47,21 @@ Program {
             Call(target=weatherSubmitFlash) { Var(name=state) }
             Lit(value=true)
             Call(target=weatherTemperatureUnit) { Var(name=state) }
+            Call(target=weatherSettingsOpen) { Var(name=state) }
+            Call(target=weatherUiPlatform) { Var(name=state) }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=settingsRender) {
+    Fn(params=handle,state) {
+      Block {
+        Return {
+          Call(target=renderWeatherSettings) {
+            Var(name=handle)
+            Call(target=weatherTemperatureUnit) { Var(name=state) }
           }
         }
       }
@@ -82,6 +98,8 @@ Program {
                 Var(name=reqState)
                 Lit(value=0)
                 Call(target=weatherTemperatureUnit) { Var(name=state) }
+                Call(target=weatherSettingsOpen) { Var(name=state) }
+                Call(target=weatherUiPlatform) { Var(name=state) }
               }
             }
           }
@@ -118,6 +136,8 @@ Program {
             Var(name=reqState)
             Lit(value=0)
             Call(target=weatherTemperatureUnit) { Var(name=state) }
+            Call(target=weatherSettingsOpen) { Var(name=state) }
+            Call(target=weatherUiPlatform) { Var(name=state) }
           }
         }
       }
@@ -206,6 +226,8 @@ Program {
                             Map { }
                             Lit(value=0)
                             Call(target=weatherTemperatureUnit) { Var(name=state) }
+                            Call(target=weatherSettingsOpen) { Var(name=state) }
+                            Call(target=weatherUiPlatform) { Var(name=state) }
                           }
                         }
                       }
@@ -240,6 +262,8 @@ Program {
                     Map { }
                     Lit(value=0)
                     Call(target=weatherTemperatureUnit) { Var(name=state) }
+                    Call(target=weatherSettingsOpen) { Var(name=state) }
+                    Call(target=weatherUiPlatform) { Var(name=state) }
                   }
                 }
               }
@@ -272,6 +296,8 @@ Program {
             Var(name=netStateNow)
             Var(name=netTicksNow)
             Call(target=weatherTemperatureUnit) { Var(name=state) }
+            Call(target=weatherSettingsOpen) { Var(name=state) }
+            Call(target=weatherUiPlatform) { Var(name=state) }
           }
         }
       }
@@ -321,6 +347,8 @@ Program {
             Var(name=reqState)
             Lit(value=0)
             Var(name=temperatureUnit)
+            Call(target=weatherSettingsOpen) { Var(name=updatedState) }
+            Call(target=weatherUiPlatform) { Var(name=updatedState) }
           }
         }
       }
@@ -331,19 +359,35 @@ Program {
     Fn(params=state,rawEvent) {
       Block {
         Let(name=eventTypeRaw) { Call(target=eventTypeOf) { Var(name=rawEvent) } }
+        Let(name=eventWindow) { Call(target=mapGetStringOr) { Var(name=rawEvent) Lit(value="window") Lit(value="") } }
+        Let(name=eventPlatform) { Call(target=mapGetStringOr) { Var(name=rawEvent) Lit(value="platform") Lit(value="") } }
         Let(name=eventWidth) { Call(target=eventWidthOf) { Var(name=rawEvent) } }
         Let(name=eventHeight) { Call(target=eventHeightOf) { Var(name=rawEvent) } }
+        Let(name=platformState) {
+          If {
+            Eq { Var(name=eventPlatform) Lit(value="") }
+            Block { Var(name=state) }
+            Block { Call(target=weatherWithUiPlatform) { Var(name=state) Var(name=eventPlatform) } }
+          }
+        }
         Let(name=sizedState) {
           If {
-            Call(target=intLt) { Lit(value=0) Var(name=eventWidth) }
+            Eq { Var(name=eventWindow) Lit(value="settings") }
+            Block { Var(name=platformState) }
             Block {
               If {
-                Call(target=intLt) { Lit(value=0) Var(name=eventHeight) }
-                Block { Call(target=weatherWithSize) { Var(name=state) Var(name=eventWidth) Var(name=eventHeight) } }
-                Block { Var(name=state) }
+                Call(target=intLt) { Lit(value=0) Var(name=eventWidth) }
+                Block {
+                  If {
+                    Call(target=intLt) { Lit(value=0) Var(name=eventHeight) }
+                    Block { Call(target=weatherWithSize) { Var(name=platformState) Var(name=eventWidth) Var(name=eventHeight) } }
+                    Block { Var(name=platformState) }
+                  }
+                }
+                Block { Var(name=platformState) }
               }
             }
-            Block { Var(name=state) }
+            Block { Var(name=platformState) }
           }
         }
         Let(name=state) { Var(name=sizedState) }
@@ -353,10 +397,125 @@ Program {
           Block { Lit(value=0) }
         }
         If {
+          Eq { Var(name=eventTypeRaw) Lit(value="closed") }
+          Block { Return { Call(target=weatherWithSettingsOpen) { Var(name=state) Lit(value=false) } } }
+          Block { Lit(value=0) }
+        }
+        If {
+          Eq { Var(name=eventTypeRaw) Lit(value="command") }
+          Block {
+            If {
+              Eq { Call(target=eventKeyOf) { Var(name=rawEvent) } Lit(value="settings") }
+              Block { Return { Call(target=weatherWithSettingsOpen) { Var(name=state) Lit(value=true) } } }
+              Block { Return { Var(name=state) } }
+            }
+          }
+          Block { Lit(value=0) }
+        }
+        If {
           Eq { Var(name=eventTypeRaw) Lit(value="click") }
           Block {
             Let(name=entryW) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-220) } }
             Let(name=submitX) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-168) } }
+            Let(name=usesDesktopMenu) { Eq { Call(target=weatherUiPlatform) { Var(name=state) } Lit(value="desktop") } }
+            Let(name=settingsGearElement) {
+              Call(target=gearButtonElement) {
+                Lit(value="weather.settings.gear")
+                Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-80) }
+                Lit(value=36)
+                Lit(value=40)
+                Lit(value="normal")
+              }
+            }
+            If {
+              Eq { Var(name=usesDesktopMenu) Lit(value=false) }
+              Block {
+                If {
+                  Eq { Call(target=weatherSettingsOpen) { Var(name=state) } Lit(value=false) }
+                  Block {
+                    If {
+                      Eq { Call(target=hitElement) { Var(name=rawEvent) Var(name=settingsGearElement) } Lit(value=true) }
+                      Block { Return { Call(target=weatherWithSettingsOpen) { Var(name=state) Lit(value=true) } } }
+                      Block { Lit(value=0) }
+                    }
+                  }
+                  Block { Lit(value=0) }
+                }
+              }
+              Block { Lit(value=0) }
+            }
+            Let(name=isSettingsSurface) {
+              If {
+                Eq { Var(name=eventWindow) Lit(value="settings") }
+                Block { Lit(value=true) }
+                Block { Call(target=weatherSettingsOpen) { Var(name=state) } }
+              }
+            }
+            If {
+              Eq { Var(name=isSettingsSurface) Lit(value=true) }
+              Block {
+                Let(name=settingsPanelX) {
+                  If {
+                    Eq { Var(name=eventWindow) Lit(value="settings") }
+                    Block { Lit(value=0) }
+                    Block { Call(target=weatherSettingsPanelX) { Call(target=weatherWidth) { Var(name=state) } } }
+                  }
+                }
+                Let(name=settingsPanelY) {
+                  If {
+                    Eq { Var(name=eventWindow) Lit(value="settings") }
+                    Block { Lit(value=0) }
+                    Block { Call(target=weatherSettingsPanelY) { Call(target=weatherHeight) { Var(name=state) } } }
+                  }
+                }
+                Let(name=settingsCelsiusElement) {
+                  Call(target=radioElement) {
+                    Lit(value="weather.settings.unit.c")
+                    Add { Var(name=settingsPanelX) Lit(value=78) }
+                    Add { Var(name=settingsPanelY) Lit(value=112) }
+                    Lit(value="Celsius") Lit(value=58)
+                    Eq { Call(target=weatherTemperatureUnit) { Var(name=state) } Lit(value="c") }
+                    Lit(value="normal")
+                  }
+                }
+                Let(name=settingsFahrenheitElement) {
+                  Call(target=radioElement) {
+                    Lit(value="weather.settings.unit.f")
+                    Add { Var(name=settingsPanelX) Lit(value=218) }
+                    Add { Var(name=settingsPanelY) Lit(value=112) }
+                    Lit(value="Fahrenheit") Lit(value=86)
+                    Eq { Call(target=weatherTemperatureUnit) { Var(name=state) } Lit(value="f") }
+                    Lit(value="normal")
+                  }
+                }
+                Let(name=settingsCloseElement) {
+                  Call(target=buttonElement) {
+                    Lit(value="weather.settings.close")
+                    Add { Var(name=settingsPanelX) Lit(value=154) }
+                    Add { Var(name=settingsPanelY) Lit(value=202) }
+                    Lit(value=112) Lit(value=36) Lit(value="Done") Lit(value="normal")
+                  }
+                }
+                If {
+                  Eq { Call(target=hitElement) { Var(name=rawEvent) Var(name=settingsCelsiusElement) } Lit(value=true) }
+                  Block { Return { Call(target=weatherWithSettingsOpen) { Call(target=weatherChangeTemperatureUnit) { Var(name=state) Lit(value="c") } Lit(value=true) } } }
+                  Block {
+                    If {
+                      Eq { Call(target=hitElement) { Var(name=rawEvent) Var(name=settingsFahrenheitElement) } Lit(value=true) }
+                      Block { Return { Call(target=weatherWithSettingsOpen) { Call(target=weatherChangeTemperatureUnit) { Var(name=state) Lit(value="f") } Lit(value=true) } } }
+                      Block {
+                        If {
+                          Eq { Call(target=hitElement) { Var(name=rawEvent) Var(name=settingsCloseElement) } Lit(value=true) }
+                          Block { Return { Call(target=weatherWithSettingsOpen) { Var(name=state) Lit(value=false) } } }
+                          Block { Return { Var(name=state) } }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              Block { Lit(value=0) }
+            }
             Let(name=inputElement) {
               Call(target=entryElementWithCaret) {
                 Lit(value="weather.query")
@@ -384,44 +543,16 @@ Program {
                 If { Call(target=intLt) { Lit(value=0) Call(target=weatherSubmitFlash) { Var(name=state) } } Block { Lit(value="pressed") } Block { Lit(value="normal") } }
               }
             }
-            Let(name=celsiusElement) {
-              Call(target=radioElement) {
-                Lit(value="weather.unit.c") Lit(value=96) Lit(value=154) Lit(value="Celsius") Lit(value=58)
-                Eq { Call(target=weatherTemperatureUnit) { Var(name=state) } Lit(value="c") }
-                Lit(value="normal")
-              }
-            }
-            Let(name=fahrenheitElement) {
-              Call(target=radioElement) {
-                Lit(value="weather.unit.f") Lit(value=204) Lit(value=154) Lit(value="Fahrenheit") Lit(value=86)
-                Eq { Call(target=weatherTemperatureUnit) { Var(name=state) } Lit(value="f") }
-                Lit(value="normal")
-              }
-            }
             Let(name=inputHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=inputElement) } }
             Let(name=submitHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=submitElement) } }
-            Let(name=celsiusHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=celsiusElement) } }
-            Let(name=fahrenheitHit) { Call(target=hitElement) { Var(name=rawEvent) Var(name=fahrenheitElement) } }
             If {
-              Eq { Var(name=celsiusHit) Lit(value=true) }
-              Block { Return { Call(target=weatherChangeTemperatureUnit) { Var(name=state) Lit(value="c") } } }
+              Eq { Var(name=submitHit) Lit(value=true) }
+              Block { Return { Call(target=weatherSubmitState) { Var(name=state) } } }
               Block {
                 If {
-                  Eq { Var(name=fahrenheitHit) Lit(value=true) }
-                  Block { Return { Call(target=weatherChangeTemperatureUnit) { Var(name=state) Lit(value="f") } } }
-                  Block {
-                    If {
-                      Eq { Var(name=submitHit) Lit(value=true) }
-                      Block { Return { Call(target=weatherSubmitState) { Var(name=state) } } }
-                      Block {
-                        If {
-                          Eq { Var(name=inputHit) Lit(value=true) }
-                          Block { Return { Call(target=weatherWithFocus) { Var(name=state) Lit(value=true) Call(target=weatherDropdownOpen) { Var(name=state) } } } }
-                          Block { Return { Call(target=weatherWithFocus) { Var(name=state) Lit(value=false) Lit(value=false) } } }
-                        }
-                      }
-                    }
-                  }
+                  Eq { Var(name=inputHit) Lit(value=true) }
+                  Block { Return { Call(target=weatherWithFocus) { Var(name=state) Lit(value=true) Call(target=weatherDropdownOpen) { Var(name=state) } } } }
+                  Block { Return { Call(target=weatherWithFocus) { Var(name=state) Lit(value=false) Lit(value=false) } } }
                 }
               }
             }
@@ -481,15 +612,67 @@ Program {
         If {
           Eq { Var(name=kind) Lit(value="UiEvent") }
           Block {
-            Return {
-              Call(target=nextNoCommands) {
-                Call(target=weatherHandleUiEvent) {
-                  Var(name=state)
-                  Call(target=mapGetNodeOr) {
-                    Var(name=event)
-                    Lit(value="event")
-                    Map { }
+            Let(name=rawEvent) {
+              Call(target=mapGetNodeOr) {
+                Var(name=event)
+                Lit(value="event")
+                Map { }
+              }
+            }
+            Let(name=newState) {
+              Call(target=weatherHandleUiEvent) {
+                Var(name=state)
+                Var(name=rawEvent)
+              }
+            }
+            If {
+              Eq { Call(target=weatherSettingsOpen) { Var(name=state) } Lit(value=true) }
+              Block {
+                If {
+                  Eq { Call(target=weatherSettingsOpen) { Var(name=newState) } Lit(value=false) }
+                  Block {
+                    If {
+                      Eq { Call(target=eventTypeOf) { Var(name=rawEvent) } Lit(value="closed") }
+                      Block { Return { Call(target=nextNoCommands) { Var(name=newState) } } }
+                      Block {
+                        Return {
+                          Call(target=next) {
+                            Var(name=newState)
+                            Call(target=commandListOne) {
+                              Map {
+                                Field(key="type") { Lit(value="CloseSettings") }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
+                  Block { Return { Call(target=nextNoCommands) { Var(name=newState) } } }
+                }
+              }
+              Block {
+                If {
+                  Eq { Call(target=mapGetStringOr) { Var(name=rawEvent) Lit(value="window") Lit(value="") } Lit(value="settings") }
+                  Block {
+                    If {
+                      Eq { Call(target=weatherSettingsOpen) { Var(name=newState) } Lit(value=false) }
+                      Block {
+                        Return {
+                          Call(target=next) {
+                            Var(name=newState)
+                            Call(target=commandListOne) {
+                              Map {
+                                Field(key="type") { Lit(value="CloseSettings") }
+                              }
+                            }
+                          }
+                        }
+                      }
+                      Block { Return { Call(target=nextNoCommands) { Var(name=newState) } } }
+                    }
+                  }
+                  Block { Return { Call(target=nextNoCommands) { Var(name=newState) } } }
                 }
               }
             }
@@ -504,11 +687,16 @@ Program {
     Fn(params=args) {
       Block {
         Let(name=appSpec) {
-          Call(target=aivectraApp) {
-            Lit(value="Weather")
-            Lit(value="init")
-            Lit(value="update")
-            Lit(value="render")
+          Call(target=aivectraAppWithSettingsWindow) {
+            Call(target=aivectraApp) {
+              Lit(value="Weather")
+              Lit(value="init")
+              Lit(value="update")
+              Lit(value="render")
+            }
+            Lit(value="settingsRender")
+            Lit(value=420)
+            Lit(value=300)
           }
         }
         Return { Call(target=aivectraRun) { Var(name=appSpec) Var(name=args) } }

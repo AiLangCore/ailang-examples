@@ -3,14 +3,113 @@ Program {
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(path="text.aos")
   Import(path="parse.aos")
+  Import(path="forecast.aos")
 
   Export(name=renderWeatherFrame)
+  Export(name=renderWeatherSettings)
+  Export(name=weatherSettingsPanelX)
+  Export(name=weatherSettingsPanelY)
+
+  Let(name=weatherSettingsPanelX) {
+    Fn(params=w) {
+      Block { Return { Call(target=popupCenterX) { Var(name=w) Lit(value=420) } } }
+    }
+  }
+
+  Let(name=weatherSettingsPanelY) {
+    Fn(params=h) {
+      Block { Return { Call(target=popupCenterY) { Var(name=h) Lit(value=300) } } }
+    }
+  }
+
+  Let(name=renderSettingsPanelContentAt) {
+    Fn(params=handle,x,y,temperatureUnit) {
+      Block {
+        Call(target=modalPanel) { Var(name=handle) Var(name=x) Var(name=y) Lit(value=420) Lit(value=300) Lit(value="Settings") }
+        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=40) } Add { Var(name=y) Lit(value=76) } Lit(value="Temperature units") Lit(value="#cbd5e1") Lit(value=15) }
+        Call(target=renderElement) {
+          Var(name=handle)
+          Call(target=radioElement) {
+            Lit(value="weather.settings.unit.c")
+            Add { Var(name=x) Lit(value=78) }
+            Add { Var(name=y) Lit(value=112) }
+            Lit(value="Celsius")
+            Lit(value=58)
+            Eq { Var(name=temperatureUnit) Lit(value="c") }
+            Lit(value="normal")
+          }
+        }
+        Call(target=renderElement) {
+          Var(name=handle)
+          Call(target=radioElement) {
+            Lit(value="weather.settings.unit.f")
+            Add { Var(name=x) Lit(value=218) }
+            Add { Var(name=y) Lit(value=112) }
+            Lit(value="Fahrenheit")
+            Lit(value=86)
+            Eq { Var(name=temperatureUnit) Lit(value="f") }
+            Lit(value="normal")
+          }
+        }
+        Call(target=renderElement) {
+          Var(name=handle)
+          Call(target=buttonElement) {
+            Lit(value="weather.settings.close")
+            Add { Var(name=x) Lit(value=154) }
+            Add { Var(name=y) Lit(value=202) }
+            Lit(value=112)
+            Lit(value=36)
+            Lit(value="Done")
+            Lit(value="normal")
+          }
+        }
+        Return { Lit(value=0) }
+      }
+    }
+  }
+
+  Let(name=renderSettingsPanelContent) {
+    Fn(params=handle,temperatureUnit) {
+      Block {
+        Return {
+          Call(target=renderSettingsPanelContentAt) {
+            Var(name=handle)
+            Lit(value=0)
+            Lit(value=0)
+            Var(name=temperatureUnit)
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=renderSettingsGear) {
+    Fn(params=handle,x,y) {
+      Block {
+        Return { Call(target=gearButton) { Var(name=handle) Lit(value="weather.settings.gear") Var(name=x) Var(name=y) Lit(value=40) Lit(value="normal") } }
+      }
+    }
+  }
+
+  Let(name=renderWeatherSettings) {
+    Fn(params=handle,temperatureUnit) {
+      Block {
+        Call(target=sys.ui.beginFrame) { Var(name=handle) }
+        Call(target=sys.ui.drawRect) { Var(name=handle) Lit(value=0) Lit(value=0) Lit(value=420) Lit(value=300) Lit(value="#0f172a") }
+        Call(target=renderSettingsPanelContent) { Var(name=handle) Var(name=temperatureUnit) }
+        Call(target=sys.ui.endFrame) { Var(name=handle) }
+        Call(target=sys.ui.present) { Var(name=handle) }
+        Return { Lit(value=0) }
+      }
+    }
+  }
 
   Let(name=renderWeatherFrame) {
-    Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible,temperatureUnit) {
+    Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible,temperatureUnit,settingsOpen,uiPlatform) {
       Block {
         Let(name=entryW) { Add { Var(name=w) Lit(value=-220) } }
         Let(name=submitX) { Add { Var(name=w) Lit(value=-168) } }
+        Let(name=usesDesktopMenu) { Eq { Var(name=uiPlatform) Lit(value="desktop") } }
         Let(name=count1) {
           If {
             Eq { Call(target=geoLabelAt) { Var(name=geoBody) Lit(value=1) } Lit(value="") }
@@ -38,6 +137,11 @@ Program {
         Call(target=sys.ui.drawRect) { Var(name=handle) Lit(value=20) Lit(value=20) Add { Var(name=w) Lit(value=-40) } Add { Var(name=h) Lit(value=-40) } Lit(value="#0f172a") }
 
         Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=40) Lit(value=40) Lit(value="Weather App") Lit(value="#ffffff") Lit(value=26) }
+        If {
+          Eq { Var(name=usesDesktopMenu) Lit(value=false) }
+          Block { Call(target=renderSettingsGear) { Var(name=handle) Add { Var(name=w) Lit(value=-80) } Lit(value=36) } }
+          Block { Lit(value=0) }
+        }
         Let(name=queryEntry) {
           Call(target=entryElementWithCaret) {
             Lit(value="weather.query")
@@ -110,32 +214,6 @@ Program {
           }
         }
 
-        Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=40) Lit(value=156) Lit(value="Units") Lit(value="#94a3b8") Lit(value=14) }
-        Call(target=renderElement) {
-          Var(name=handle)
-          Call(target=radioElement) {
-            Lit(value="weather.unit.c")
-            Lit(value=96)
-            Lit(value=154)
-            Lit(value="Celsius")
-            Lit(value=58)
-            Eq { Var(name=temperatureUnit) Lit(value="c") }
-            Lit(value="normal")
-          }
-        }
-        Call(target=renderElement) {
-          Var(name=handle)
-          Call(target=radioElement) {
-            Lit(value="weather.unit.f")
-            Lit(value=204)
-            Lit(value=154)
-            Lit(value="Fahrenheit")
-            Lit(value=86)
-            Eq { Var(name=temperatureUnit) Lit(value="f") }
-            Lit(value="normal")
-          }
-        }
-
         If {
           Eq { Var(name=dropdownOpen) Lit(value=true) }
           Block {
@@ -152,7 +230,7 @@ Program {
           Block { Lit(value=0) }
         }
 
-        Let(name=forecastY) { Lit(value=196) }
+        Let(name=forecastY) { Lit(value=146) }
         Let(name=forecastBottom) { Add { Var(name=h) Lit(value=-56) } }
         Let(name=forecastHRaw) { Call(target=sub) { Var(name=forecastBottom) Var(name=forecastY) } }
         Let(name=forecastH) {
@@ -178,17 +256,13 @@ Program {
           Lit(value="#cbd5e1") Lit(value=16)
         }
 
-        If {
-          Eq { Var(name=forecastBody) Lit(value="") }
-          Block { Lit(value=0) }
-          Block {
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=92) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=76) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=1) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=112) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=96) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=2) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=132) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=116) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=3) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=152) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=136) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=4) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=forecastH) Lit(value=172) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=156) } Call(target=dayLineFromForecast) { Var(name=forecastBody) Lit(value=5) Var(name=temperatureUnit) } Lit(value="#e2e8f0") Lit(value=14) } Lit(value=0) } Block { Lit(value=0) } }
-            Lit(value=0)
-          }
+        Call(target=renderForecastCards) {
+          Var(name=handle)
+          Var(name=forecastBody)
+          Var(name=temperatureUnit)
+          Var(name=w)
+          Var(name=forecastY)
+          Var(name=forecastH)
         }
 
         Let(name=radarX) { Add { Var(name=w) Lit(value=-188) } }
@@ -221,6 +295,24 @@ Program {
         }
 
         Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=40) Add { Var(name=h) Lit(value=-28) } Var(name=statusLine) Lit(value="#e2e8f0") Lit(value=14) }
+
+        If {
+          Eq { Var(name=settingsOpen) Lit(value=true) }
+          Block {
+            If {
+              Eq { Var(name=usesDesktopMenu) Lit(value=false) }
+              Block {
+                Let(name=modalX) { Call(target=weatherSettingsPanelX) { Var(name=w) } }
+                Let(name=modalY) { Call(target=weatherSettingsPanelY) { Var(name=h) } }
+                Call(target=modalOverlay) { Var(name=handle) Var(name=w) Var(name=h) }
+                Call(target=renderSettingsPanelContentAt) { Var(name=handle) Var(name=modalX) Var(name=modalY) Var(name=temperatureUnit) }
+                Lit(value=0)
+              }
+              Block { Lit(value=0) }
+            }
+          }
+          Block { Lit(value=0) }
+        }
 
         Call(target=sys.ui.endFrame) { Var(name=handle) }
         Call(target=sys.ui.present) { Var(name=handle) }
