@@ -4,6 +4,7 @@
 .tmp/
 .toolchain/
 dist/
+dist-wasm/
 build/
 out/
 *.aibc1
