@@ -189,7 +189,7 @@ Program {
   }
 
   Let(name=renderForecastCards) {
-    Fn(params=handle,forecastBody,temperatureUnit,windowWidth,forecastY,forecastH) {
+    Fn(params=handle,forecastBody,temperatureUnit,windowWidth,forecastY,forecastH,frameTick) {
       Block {
         If {
           Eq { Var(name=forecastBody) Lit(value="") }
@@ -207,7 +207,7 @@ Program {
             Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=4) Add { Var(name=rowX) Lit(value=360) } Var(name=rowY) Lit(value=160) Lit(value=158) }
             Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=5) Add { Var(name=rowX) Lit(value=540) } Var(name=rowY) Lit(value=160) Lit(value=158) }
             Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=6) Add { Var(name=rowX) Lit(value=720) } Var(name=rowY) Lit(value=160) Lit(value=158) }
-            Call(target=horizontalScroller) { Var(name=handle) Var(name=rowX) Add { Var(name=rowY) Lit(value=174) } Var(name=rowW) Var(name=rowContentW) Lit(value=0) }
+            Call(target=horizontalScrollerAnimated) { Var(name=handle) Var(name=rowX) Add { Var(name=rowY) Lit(value=174) } Var(name=rowW) Var(name=rowContentW) Var(name=frameTick) Lit(value=120) }
             Return { Lit(value=0) }
           }
         }

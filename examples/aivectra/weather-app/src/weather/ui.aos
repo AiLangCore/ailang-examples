@@ -325,6 +325,7 @@ Program {
           Var(name=w)
           Var(name=forecastY)
           Var(name=forecastH)
+          Var(name=radarTick)
         }
 
         Let(name=radarX) { Add { Var(name=w) Lit(value=-188) } }
