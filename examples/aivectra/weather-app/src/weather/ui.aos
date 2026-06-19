@@ -121,7 +121,7 @@ Program {
   }
 
   Let(name=renderWeatherFrame) {
-    Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible,temperatureUnit,settingsOpen,uiPlatform,hasStoredLocation,forecastScrollOffset) {
+    Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible,temperatureUnit,settingsOpen,uiPlatform,hasStoredLocation,forecastScrollOffset,baseDayIndex) {
       Block {
         Let(name=entryW) { Add { Var(name=w) Lit(value=-220) } }
         Let(name=submitX) { Add { Var(name=w) Lit(value=-168) } }
@@ -322,6 +322,7 @@ Program {
           Var(name=handle)
           Var(name=forecastBody)
           Var(name=temperatureUnit)
+          Var(name=baseDayIndex)
           Var(name=w)
           Var(name=forecastY)
           Var(name=forecastH)

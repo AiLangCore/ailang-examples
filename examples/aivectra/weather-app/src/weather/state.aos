@@ -245,28 +245,34 @@ Program {
     Fn(params=state,width,height) {
       Block {
         Return {
-          Call(target=weatherState) {
-            Call(target=weatherQuery) { Var(name=state) }
-            Call(target=weatherFocused) { Var(name=state) }
-            Call(target=weatherDropdownOpen) { Var(name=state) }
-            Call(target=weatherGeoBody) { Var(name=state) }
-            Call(target=weatherSelectedLabel) { Var(name=state) }
-            Call(target=weatherSelectedLat) { Var(name=state) }
-            Call(target=weatherSelectedLon) { Var(name=state) }
-            Call(target=weatherForecastBody) { Var(name=state) }
-            Call(target=weatherStatusLine) { Var(name=state) }
-            Call(target=weatherRadarOpen) { Var(name=state) }
-            Call(target=weatherRadarTick) { Var(name=state) }
-            Var(name=width)
-            Var(name=height)
-            Call(target=weatherSubmitFlash) { Var(name=state) }
-            Call(target=weatherBlinkTick) { Var(name=state) }
-            Call(target=weatherNetKind) { Var(name=state) }
-            Call(target=weatherNetState) { Var(name=state) }
-            Call(target=weatherNetTicks) { Var(name=state) }
-            Call(target=weatherTemperatureUnit) { Var(name=state) }
-            Call(target=weatherSettingsOpen) { Var(name=state) }
-            Call(target=weatherUiPlatform) { Var(name=state) }
+          Call(target=weatherWithForecastScrollOffset) {
+            Call(target=weatherWithStoredLocation) {
+              Call(target=weatherState) {
+                Call(target=weatherQuery) { Var(name=state) }
+                Call(target=weatherFocused) { Var(name=state) }
+                Call(target=weatherDropdownOpen) { Var(name=state) }
+                Call(target=weatherGeoBody) { Var(name=state) }
+                Call(target=weatherSelectedLabel) { Var(name=state) }
+                Call(target=weatherSelectedLat) { Var(name=state) }
+                Call(target=weatherSelectedLon) { Var(name=state) }
+                Call(target=weatherForecastBody) { Var(name=state) }
+                Call(target=weatherStatusLine) { Var(name=state) }
+                Call(target=weatherRadarOpen) { Var(name=state) }
+                Call(target=weatherRadarTick) { Var(name=state) }
+                Var(name=width)
+                Var(name=height)
+                Call(target=weatherSubmitFlash) { Var(name=state) }
+                Call(target=weatherBlinkTick) { Var(name=state) }
+                Call(target=weatherNetKind) { Var(name=state) }
+                Call(target=weatherNetState) { Var(name=state) }
+                Call(target=weatherNetTicks) { Var(name=state) }
+                Call(target=weatherTemperatureUnit) { Var(name=state) }
+                Call(target=weatherSettingsOpen) { Var(name=state) }
+                Call(target=weatherUiPlatform) { Var(name=state) }
+              }
+              Call(target=weatherHasStoredLocation) { Var(name=state) }
+            }
+            Call(target=weatherForecastScrollOffset) { Var(name=state) }
           }
         }
       }

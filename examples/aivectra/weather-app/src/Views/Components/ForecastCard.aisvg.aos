@@ -1,4 +1,5 @@
 Program {
+  Import(sdk="ailang" path="std/date_time.aos")
   Import(path="../../weather/text.aos")
 
   Export(name=forecastCardDailyValue)
@@ -29,14 +30,14 @@ Program {
   }
 
   Let(name=forecastCardDayLabel) {
-    Fn(params=dayIndex) {
+    Fn(params=baseDayIndex,dayIndex) {
       Block {
-        If { Eq { Var(name=dayIndex) Lit(value=1) } Block { Return { Lit(value="Today") } } Block { Lit(value=0) } }
-        If { Eq { Var(name=dayIndex) Lit(value=2) } Block { Return { Lit(value="+1 day") } } Block { Lit(value=0) } }
-        If { Eq { Var(name=dayIndex) Lit(value=3) } Block { Return { Lit(value="+2 days") } } Block { Lit(value=0) } }
-        If { Eq { Var(name=dayIndex) Lit(value=4) } Block { Return { Lit(value="+3 days") } } Block { Lit(value=0) } }
-        If { Eq { Var(name=dayIndex) Lit(value=5) } Block { Return { Lit(value="+4 days") } } Block { Lit(value=0) } }
-        Return { Lit(value="+5 days") }
+        Return {
+          Call(target=relativeDayLabelFromBaseDayIndex) {
+            Var(name=baseDayIndex)
+            Add { Var(name=dayIndex) Lit(value=-1) }
+          }
+        }
       }
     }
   }

@@ -6,7 +6,7 @@ Program {
     runTool="aivectra"
   ) {
     Include(name="aivectra" version="0.0.1-beta.15")
-    Include(name="vectra-ui" version="0.0.1-alpha.25")
+    Include(name="vectra-ui" version="0.0.1-alpha.26")
     Include(name="std-http")
     Include(name="std-storage")
   }

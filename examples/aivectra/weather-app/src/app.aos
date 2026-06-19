@@ -5,6 +5,7 @@ Program {
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(package="std-http" path="src/net/http.aos")
   Import(package="std-storage" path="src/storage/storage.aos")
+  Import(sdk="ailang" path="std/date_time.aos")
   Import(sdk="ailang" path="std/str.aos")
   Import(path="weather/text.aos")
   Import(path="weather/http.aos")
@@ -108,6 +109,7 @@ Program {
             Call(target=weatherUiPlatform) { Var(name=state) }
             Call(target=weatherHasStoredLocation) { Var(name=state) }
             Call(target=weatherForecastScrollOffset) { Var(name=state) }
+            Call(target=currentLocalDayIndex) { Lit(value=0) }
           }
         }
       }
@@ -470,7 +472,13 @@ Program {
         }
         If {
           Eq { Var(name=eventTypeRaw) Lit(value="closed") }
-          Block { Return { Call(target=weatherWithSettingsOpen) { Var(name=state) Lit(value=false) } } }
+          Block {
+            If {
+              Eq { Var(name=eventWindow) Lit(value="settings") }
+              Block { Return { Call(target=weatherWithSettingsOpen) { Var(name=state) Lit(value=false) } } }
+              Block { Return { Var(name=state) } }
+            }
+          }
           Block { Lit(value=0) }
         }
         If {
