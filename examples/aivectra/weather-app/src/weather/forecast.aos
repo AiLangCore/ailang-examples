@@ -54,15 +54,19 @@ Program {
     }
   }
 
-  Let(name=forecastDayLabel) {
-    Fn(params=dayIndex) {
+  Let(name=forecastCardFullyVisible) {
+    Fn(params=cardX,cardW,viewportX,viewportW) {
       Block {
-        If { Eq { Var(name=dayIndex) Lit(value=1) } Block { Return { Lit(value="Today") } } Block { Lit(value=0) } }
-        If { Eq { Var(name=dayIndex) Lit(value=2) } Block { Return { Lit(value="+1 day") } } Block { Lit(value=0) } }
-        If { Eq { Var(name=dayIndex) Lit(value=3) } Block { Return { Lit(value="+2 days") } } Block { Lit(value=0) } }
-        If { Eq { Var(name=dayIndex) Lit(value=4) } Block { Return { Lit(value="+3 days") } } Block { Lit(value=0) } }
-        If { Eq { Var(name=dayIndex) Lit(value=5) } Block { Return { Lit(value="+4 days") } } Block { Lit(value=0) } }
-        Return { Lit(value="+5 days") }
+        If {
+          Call(target=lt) { Var(name=cardX) Var(name=viewportX) }
+          Block { Return { Lit(value=false) } }
+          Block { Lit(value=0) }
+        }
+        If {
+          Call(target=lt) { Add { Var(name=viewportX) Var(name=viewportW) } Add { Var(name=cardX) Var(name=cardW) } }
+          Block { Return { Lit(value=false) } }
+          Block { Return { Lit(value=true) } }
+        }
       }
     }
   }
@@ -188,6 +192,32 @@ Program {
     }
   }
 
+  Let(name=forecastCardInViewport) {
+    Fn(params=handle,forecastBody,temperatureUnit,baseDayIndex,dayIndex,x,y,w,h,viewportX,viewportW) {
+      Block {
+        If {
+          Call(target=forecastCardFullyVisible) { Var(name=x) Var(name=w) Var(name=viewportX) Var(name=viewportW) }
+          Block {
+            Return {
+              Call(target=forecastCard) {
+                Var(name=handle)
+                Var(name=forecastBody)
+                Var(name=temperatureUnit)
+                Var(name=baseDayIndex)
+                Var(name=dayIndex)
+                Var(name=x)
+                Var(name=y)
+                Var(name=w)
+                Var(name=h)
+              }
+            }
+          }
+          Block { Return { Lit(value=0) } }
+        }
+      }
+    }
+  }
+
   Let(name=renderForecastCards) {
     Fn(params=handle,forecastBody,temperatureUnit,baseDayIndex,windowWidth,forecastY,forecastH,frameTick,scrollOffset) {
       Block {
@@ -205,11 +235,11 @@ Program {
             Let(name=rowContentX) { Call(target=sub) { Var(name=rowX) Var(name=rowOffset) } }
             Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.today.heading") Var(name=todayX) Add { Var(name=forecastY) Lit(value=52) } Lit(value="Today") Lit(value="#f8fafc") Lit(value=24) } }
             Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=1) Var(name=todayX) Add { Var(name=forecastY) Lit(value=84) } Var(name=todayW) Lit(value=176) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=2) Var(name=rowContentX) Var(name=rowY) Lit(value=220) Lit(value=158) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=3) Add { Var(name=rowContentX) Lit(value=250) } Var(name=rowY) Lit(value=220) Lit(value=158) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=4) Add { Var(name=rowContentX) Lit(value=500) } Var(name=rowY) Lit(value=220) Lit(value=158) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=5) Add { Var(name=rowContentX) Lit(value=750) } Var(name=rowY) Lit(value=220) Lit(value=158) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=6) Add { Var(name=rowContentX) Lit(value=1000) } Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=2) Var(name=rowContentX) Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
+            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=3) Add { Var(name=rowContentX) Lit(value=250) } Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
+            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=4) Add { Var(name=rowContentX) Lit(value=500) } Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
+            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=5) Add { Var(name=rowContentX) Lit(value=750) } Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
+            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=6) Add { Var(name=rowContentX) Lit(value=1000) } Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
             Call(target=horizontalScroller) { Var(name=handle) Var(name=rowX) Add { Var(name=rowY) Lit(value=174) } Var(name=rowW) Var(name=rowContentW) Var(name=rowOffset) }
             Return { Lit(value=0) }
           }
