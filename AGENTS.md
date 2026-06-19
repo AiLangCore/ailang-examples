@@ -16,6 +16,9 @@ belong in the owning source repository.
   architecture, and maintainability. Examples should model the code quality we
   want contributors and AI agents to copy.
 - Keep examples small, polished, and runnable from an installed SDK.
+- Anything that is part of an example application belongs under that example's
+  `src` directory, including views, app-owned assets, target/platform metadata,
+  code-behind files, app-local modules, and app-owned templates.
 - Split production-style examples into focused modules. Keep entry files thin,
   and separate UI rendering, state transitions, parsing, network/host
   boundaries, and reusable library behavior.
