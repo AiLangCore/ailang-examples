@@ -106,6 +106,7 @@ Program {
             Call(target=weatherSettingsOpen) { Var(name=state) }
             Call(target=weatherUiPlatform) { Var(name=state) }
             Call(target=weatherHasStoredLocation) { Var(name=state) }
+            Call(target=weatherForecastScrollOffset) { Var(name=state) }
           }
         }
       }
@@ -481,6 +482,27 @@ Program {
             }
           }
           Block { Lit(value=0) }
+        }
+        If {
+          Eq { Call(target=weatherForecastBody) { Var(name=state) } Lit(value="") }
+          Block { Lit(value=0) }
+          Block {
+            Let(name=forecastRowW) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-112) } }
+            Let(name=forecastRowContentW) { Lit(value=880) }
+            Let(name=nextForecastScrollOffset) {
+              Call(target=horizontalScrollerEventOffset) {
+                Var(name=forecastRowW)
+                Var(name=forecastRowContentW)
+                Call(target=weatherForecastScrollOffset) { Var(name=state) }
+                Var(name=rawEvent)
+              }
+            }
+            If {
+              Eq { Var(name=nextForecastScrollOffset) Call(target=weatherForecastScrollOffset) { Var(name=state) } }
+              Block { Lit(value=0) }
+              Block { Return { Call(target=weatherWithForecastScrollOffset) { Var(name=state) Var(name=nextForecastScrollOffset) } } }
+            }
+          }
         }
         If {
           Eq { Var(name=eventTypeRaw) Lit(value="click") }

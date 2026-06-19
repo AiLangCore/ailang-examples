@@ -25,6 +25,7 @@ Program {
   Export(name=weatherSettingsOpen)
   Export(name=weatherUiPlatform)
   Export(name=weatherHasStoredLocation)
+  Export(name=weatherForecastScrollOffset)
   Export(name=weatherWithQuery)
   Export(name=weatherWithFocus)
   Export(name=weatherWithStatus)
@@ -33,6 +34,7 @@ Program {
   Export(name=weatherWithSettingsOpen)
   Export(name=weatherWithUiPlatform)
   Export(name=weatherWithStoredLocation)
+  Export(name=weatherWithForecastScrollOffset)
 
   Let(name=weatherState) {
     Fn(params=query,focused,dropdownOpen,geoBody,selectedLabel,selectedLat,selectedLon,forecastBody,statusLine,radarOpen,radarTick,width,height,submitFlash,blinkTick,netKind,netState,netTicks,temperatureUnit,settingsOpen,uiPlatform) {
@@ -119,7 +121,29 @@ Program {
   Let(name=weatherTemperatureUnit) { Fn(params=state) { Block { Return { Call(target=mapGetStringOr) { Var(name=state) Lit(value="temperatureUnit") Lit(value="c") } } } } }
   Let(name=weatherSettingsOpen) { Fn(params=state) { Block { Return { Call(target=mapGetBoolOr) { Var(name=state) Lit(value="settingsOpen") Lit(value=false) } } } } }
   Let(name=weatherUiPlatform) { Fn(params=state) { Block { Return { Call(target=mapGetStringOr) { Var(name=state) Lit(value="uiPlatform") Lit(value="desktop") } } } } }
-  Let(name=weatherHasStoredLocation) { Fn(params=state) { Block { Return { Call(target=mapGetBoolOr) { Var(name=state) Lit(value="hasStoredLocation") Lit(value=false) } } } } }
+  Let(name=weatherHasStoredLocation) {
+    Fn(params=state) {
+      Block {
+        If {
+          Call(target=mapGetBoolOr) { Var(name=state) Lit(value="hasStoredLocation") Lit(value=false) }
+          Block { Return { Lit(value=true) } }
+          Block { Lit(value=0) }
+        }
+        If {
+          Eq { Call(target=weatherSelectedLat) { Var(name=state) } Lit(value="") }
+          Block { Return { Lit(value=false) } }
+          Block {
+            If {
+              Eq { Call(target=weatherSelectedLon) { Var(name=state) } Lit(value="") }
+              Block { Return { Lit(value=false) } }
+              Block { Return { Lit(value=true) } }
+            }
+          }
+        }
+      }
+    }
+  }
+  Let(name=weatherForecastScrollOffset) { Fn(params=state) { Block { Return { Call(target=mapGetIntOr) { Var(name=state) Lit(value="forecastScrollOffset") Lit(value=0) } } } } }
 
   Let(name=weatherWithQuery) {
     Fn(params=state,query) {
@@ -277,6 +301,14 @@ Program {
     Fn(params=state,hasStoredLocation) {
       Block {
         Return { Call(target=mapSet) { Var(name=state) Lit(value="hasStoredLocation") Var(name=hasStoredLocation) } }
+      }
+    }
+  }
+
+  Let(name=weatherWithForecastScrollOffset) {
+    Fn(params=state,forecastScrollOffset) {
+      Block {
+        Return { Call(target=mapSet) { Var(name=state) Lit(value="forecastScrollOffset") Var(name=forecastScrollOffset) } }
       }
     }
   }
