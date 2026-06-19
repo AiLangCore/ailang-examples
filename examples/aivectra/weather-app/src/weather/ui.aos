@@ -105,7 +105,7 @@ Program {
   }
 
   Let(name=renderWeatherFrame) {
-    Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible,temperatureUnit,settingsOpen,uiPlatform) {
+    Fn(params=handle,query,focused,dropdownOpen,geoBody,selectedLabel,forecastBody,statusLine,radarOpen,radarTick,w,h,submitFlash,caretVisible,temperatureUnit,settingsOpen,uiPlatform,hasStoredLocation) {
       Block {
         Let(name=entryW) { Add { Var(name=w) Lit(value=-220) } }
         Let(name=submitX) { Add { Var(name=w) Lit(value=-168) } }
@@ -142,59 +142,28 @@ Program {
           Block { Call(target=renderSettingsGear) { Var(name=handle) Add { Var(name=w) Lit(value=-80) } Lit(value=36) } }
           Block { Lit(value=0) }
         }
-        Let(name=queryEntry) {
-          Call(target=entryElementWithCaret) {
-            Lit(value="weather.query")
-            Lit(value=40)
-            Lit(value=74)
-            Var(name=entryW)
-            Lit(value=44)
-            Lit(value="ZIP, city, or city,state")
-            Var(name=query)
-            Lit(value="e.g. Springfield or 10001")
-            Var(name=focused)
-            If { Eq { Var(name=focused) Lit(value=true) } Block { Lit(value="focused") } Block { Lit(value="normal") } }
-            Call(target=strLen) { Var(name=query) }
-            Var(name=caretVisible)
-          }
-        }
-        Call(target=renderElement) { Var(name=handle) Var(name=queryEntry) }
-
         If {
-          Call(target=intLt) { Lit(value=0) Var(name=submitFlash) }
+          Eq { Var(name=hasStoredLocation) Lit(value=false) }
           Block {
-            Call(target=renderElement) {
-              Var(name=handle)
-              Call(target=buttonElement) {
-                Lit(value="weather.submit")
-                Var(name=submitX)
-                Lit(value=92)
-                Lit(value=140)
+            Let(name=queryEntry) {
+              Call(target=entryElementWithCaret) {
+                Lit(value="weather.query")
+                Lit(value=40)
+                Lit(value=74)
+                Var(name=entryW)
                 Lit(value=44)
-                Lit(value="Submit")
-                Lit(value="pressed")
+                Lit(value="ZIP, city, or city,state")
+                Var(name=query)
+                Lit(value="e.g. Springfield or 10001")
+                Var(name=focused)
+                If { Eq { Var(name=focused) Lit(value=true) } Block { Lit(value="focused") } Block { Lit(value="normal") } }
+                Call(target=strLen) { Var(name=query) }
+                Var(name=caretVisible)
               }
             }
-            Lit(value=0)
-          }
-          Block {
+            Call(target=renderElement) { Var(name=handle) Var(name=queryEntry) }
             If {
-              Call(target=contains) { Var(name=statusLine) Lit(value="Loading") }
-              Block {
-                Call(target=renderElement) {
-                  Var(name=handle)
-                  Call(target=buttonElement) {
-                    Lit(value="weather.submit")
-                    Var(name=submitX)
-                    Lit(value=92)
-                    Lit(value=140)
-                    Lit(value=44)
-                    Lit(value="Loading")
-                    Lit(value="busy")
-                  }
-                }
-                Lit(value=0)
-              }
+              Call(target=intLt) { Lit(value=0) Var(name=submitFlash) }
               Block {
                 Call(target=renderElement) {
                   Var(name=handle)
@@ -205,13 +174,49 @@ Program {
                     Lit(value=140)
                     Lit(value=44)
                     Lit(value="Submit")
-                    Lit(value="normal")
+                    Lit(value="pressed")
                   }
                 }
                 Lit(value=0)
               }
+              Block {
+                If {
+                  Call(target=contains) { Var(name=statusLine) Lit(value="Loading") }
+                  Block {
+                    Call(target=renderElement) {
+                      Var(name=handle)
+                      Call(target=buttonElement) {
+                        Lit(value="weather.submit")
+                        Var(name=submitX)
+                        Lit(value=92)
+                        Lit(value=140)
+                        Lit(value=44)
+                        Lit(value="Loading")
+                        Lit(value="busy")
+                      }
+                    }
+                    Lit(value=0)
+                  }
+                  Block {
+                    Call(target=renderElement) {
+                      Var(name=handle)
+                      Call(target=buttonElement) {
+                        Lit(value="weather.submit")
+                        Var(name=submitX)
+                        Lit(value=92)
+                        Lit(value=140)
+                        Lit(value=44)
+                        Lit(value="Submit")
+                        Lit(value="normal")
+                      }
+                    }
+                    Lit(value=0)
+                  }
+                }
+              }
             }
           }
+          Block { Lit(value=0) }
         }
 
         If {
@@ -230,7 +235,13 @@ Program {
           Block { Lit(value=0) }
         }
 
-        Let(name=forecastY) { Lit(value=146) }
+        Let(name=forecastY) {
+          If {
+            Eq { Var(name=hasStoredLocation) Lit(value=true) }
+            Block { Lit(value=92) }
+            Block { Lit(value=146) }
+          }
+        }
         Let(name=forecastBottom) { Add { Var(name=h) Lit(value=-56) } }
         Let(name=forecastHRaw) { Call(target=sub) { Var(name=forecastBottom) Var(name=forecastY) } }
         Let(name=forecastH) {

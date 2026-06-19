@@ -1,9 +1,35 @@
 Program {
-  Import(sdk="ailang" path="std/math.aos")
+  Import(sdk="ailang" path="std/number.aos")
+  Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(path="text.aos")
   Import(path="parse.aos")
 
   Export(name=renderForecastCards)
+
+  Let(name=forecastHalfFloor) {
+    Fn(params=value,acc) {
+      Block {
+        If {
+          Eq { Var(name=value) Lit(value=0) }
+          Block { Return { Var(name=acc) } }
+          Block {
+            If {
+              Eq { Var(name=value) Lit(value=1) }
+              Block { Return { Var(name=acc) } }
+              Block {
+                Return {
+                  Call(target=forecastHalfFloor) {
+                    Add { Var(name=value) Lit(value=-2) }
+                    Add { Var(name=acc) Lit(value=1) }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   Let(name=forecastDailyValue) {
     Fn(params=forecastBody,key,dayIndex) {
@@ -160,31 +186,20 @@ Program {
           Eq { Var(name=forecastBody) Lit(value="") }
           Block { Return { Lit(value=0) } }
           Block {
-            If {
-              Call(target=intLt) { Var(name=windowWidth) Lit(value=1180) }
-              Block {
-                If { Call(target=intGte) { Var(name=forecastH) Lit(value=336) } Block {
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=1) Lit(value=56) Add { Var(name=forecastY) Lit(value=86) } Lit(value=164) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=2) Lit(value=238) Add { Var(name=forecastY) Lit(value=86) } Lit(value=164) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=3) Lit(value=420) Add { Var(name=forecastY) Lit(value=86) } Lit(value=164) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=4) Lit(value=56) Add { Var(name=forecastY) Lit(value=264) } Lit(value=164) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=5) Lit(value=238) Add { Var(name=forecastY) Lit(value=264) } Lit(value=164) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=6) Lit(value=420) Add { Var(name=forecastY) Lit(value=264) } Lit(value=164) Lit(value=162) }
-                  Return { Lit(value=0) }
-                } Block { Return { Lit(value=0) } } }
-              }
-              Block {
-                If { Call(target=intGte) { Var(name=forecastH) Lit(value=260) } Block {
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=1) Lit(value=56) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=2) Lit(value=236) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=3) Lit(value=416) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=4) Lit(value=596) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=5) Lit(value=776) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
-                  Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=6) Lit(value=956) Add { Var(name=forecastY) Lit(value=86) } Lit(value=160) Lit(value=162) }
-                  Return { Lit(value=0) }
-                } Block { Return { Lit(value=0) } } }
-              }
-            }
+            Let(name=todayW) { Lit(value=188) }
+            Let(name=todayX) { Call(target=forecastHalfFloor) { Call(target=sub) { Var(name=windowWidth) Var(name=todayW) } Lit(value=0) } }
+            Let(name=rowX) { Lit(value=56) }
+            Let(name=rowY) { Add { Var(name=forecastY) Lit(value=250) } }
+            Let(name=rowW) { Add { Var(name=windowWidth) Lit(value=-112) } }
+            Let(name=rowContentW) { Lit(value=880) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=1) Var(name=todayX) Add { Var(name=forecastY) Lit(value=76) } Var(name=todayW) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=2) Var(name=rowX) Var(name=rowY) Lit(value=160) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=3) Add { Var(name=rowX) Lit(value=180) } Var(name=rowY) Lit(value=160) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=4) Add { Var(name=rowX) Lit(value=360) } Var(name=rowY) Lit(value=160) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=5) Add { Var(name=rowX) Lit(value=540) } Var(name=rowY) Lit(value=160) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=6) Add { Var(name=rowX) Lit(value=720) } Var(name=rowY) Lit(value=160) Lit(value=158) }
+            Call(target=horizontalScroller) { Var(name=handle) Var(name=rowX) Add { Var(name=rowY) Lit(value=174) } Var(name=rowW) Var(name=rowContentW) Lit(value=0) }
+            Return { Lit(value=0) }
           }
         }
       }

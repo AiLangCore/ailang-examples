@@ -8,5 +8,6 @@ Program {
     Include(name="aivectra")
     Include(name="vectra-ui")
     Include(name="std-http")
+    Include(name="std-storage")
   }
 }

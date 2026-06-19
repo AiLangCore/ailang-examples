@@ -4,6 +4,7 @@ Program {
   Import(package="std-app" path="src/app/next.aos")
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(package="std-http" path="src/net/http.aos")
+  Import(package="std-storage" path="src/storage/storage.aos")
   Import(sdk="ailang" path="std/str.aos")
   Import(path="weather/text.aos")
   Import(path="weather/http.aos")
@@ -23,7 +24,62 @@ Program {
 
   Let(name=init) {
     Fn(params=args) {
-      Block { Return { Call(target=weatherInitialState) { Var(name=args) } } }
+      Block {
+        Let(name=appId) { Lit(value="codes.ailang.examples.weather") }
+        Let(name=baseState) { Call(target=weatherInitialState) { Var(name=args) } }
+        Let(name=storedUnitRaw) { Call(target=localGet) { Var(name=appId) Lit(value="temperatureUnit") } }
+        Let(name=storedUnit) {
+          If {
+            Eq { Var(name=storedUnitRaw) Lit(value="f") }
+            Block { Lit(value="f") }
+            Block { Lit(value="c") }
+          }
+        }
+        Let(name=storedQuery) { Call(target=localGet) { Var(name=appId) Lit(value="query") } }
+        Let(name=storedLabel) { Call(target=localGet) { Var(name=appId) Lit(value="selectedLabel") } }
+        Let(name=storedLat) { Call(target=localGet) { Var(name=appId) Lit(value="selectedLat") } }
+        Let(name=storedLon) { Call(target=localGet) { Var(name=appId) Lit(value="selectedLon") } }
+        Let(name=storedForecast) { Call(target=localGet) { Var(name=appId) Lit(value="forecastBody") } }
+        If {
+          Eq { Var(name=storedLat) Lit(value="") }
+          Block { Return { Call(target=weatherWithTemperatureUnit) { Var(name=baseState) Var(name=storedUnit) } } }
+          Block { Lit(value=0) }
+        }
+        If {
+          Eq { Var(name=storedLon) Lit(value="") }
+          Block { Return { Call(target=weatherWithTemperatureUnit) { Var(name=baseState) Var(name=storedUnit) } } }
+          Block { Lit(value=0) }
+        }
+        Let(name=reqState) { Call(target=startForecastRequest) { Var(name=storedLat) Var(name=storedLon) Var(name=storedUnit) } }
+        Return {
+          Call(target=weatherWithStoredLocation) {
+            Call(target=weatherState) {
+              If { Eq { Var(name=storedQuery) Lit(value="") } Block { Var(name=storedLabel) } Block { Var(name=storedQuery) } }
+              Lit(value=false)
+              Lit(value=false)
+              Lit(value="")
+              Var(name=storedLabel)
+              Var(name=storedLat)
+              Var(name=storedLon)
+              Var(name=storedForecast)
+              If { Eq { Var(name=storedForecast) Lit(value="") } Block { Lit(value="Loading stored weather...") } Block { StrConcat { Lit(value="Loaded stored weather for ") Var(name=storedLabel) } } }
+              Lit(value=false)
+              Lit(value=0)
+              Lit(value=640)
+              Lit(value=360)
+              Lit(value=0)
+              Lit(value=0)
+              Lit(value="forecast")
+              Var(name=reqState)
+              Lit(value=0)
+              Var(name=storedUnit)
+              Lit(value=false)
+              Lit(value="desktop")
+            }
+            Lit(value=true)
+          }
+        }
+      }
     }
   }
 
@@ -49,6 +105,7 @@ Program {
             Call(target=weatherTemperatureUnit) { Var(name=state) }
             Call(target=weatherSettingsOpen) { Var(name=state) }
             Call(target=weatherUiPlatform) { Var(name=state) }
+            Call(target=weatherHasStoredLocation) { Var(name=state) }
           }
         }
       }
@@ -114,30 +171,37 @@ Program {
         Let(name=lat) { Call(target=geoLatAt) { Var(name=geoBody) Var(name=index) } }
         Let(name=lon) { Call(target=geoLonAt) { Var(name=geoBody) Var(name=index) } }
         Let(name=label) { Call(target=geoLabelAt) { Var(name=geoBody) Var(name=index) } }
+        Call(target=localSet) { Lit(value="codes.ailang.examples.weather") Lit(value="query") Call(target=weatherQuery) { Var(name=state) } }
+        Call(target=localSet) { Lit(value="codes.ailang.examples.weather") Lit(value="selectedLabel") Var(name=label) }
+        Call(target=localSet) { Lit(value="codes.ailang.examples.weather") Lit(value="selectedLat") Var(name=lat) }
+        Call(target=localSet) { Lit(value="codes.ailang.examples.weather") Lit(value="selectedLon") Var(name=lon) }
         Let(name=reqState) { Call(target=startForecastRequest) { Var(name=lat) Var(name=lon) Call(target=weatherTemperatureUnit) { Var(name=state) } } }
         Return {
-          Call(target=weatherState) {
-            Call(target=weatherQuery) { Var(name=state) }
+          Call(target=weatherWithStoredLocation) {
+            Call(target=weatherState) {
+              Call(target=weatherQuery) { Var(name=state) }
+              Lit(value=false)
+              Lit(value=false)
+              Lit(value="")
+              Var(name=label)
+              Var(name=lat)
+              Var(name=lon)
+              Lit(value="")
+              Lit(value="Loading weather...")
+              Call(target=weatherRadarOpen) { Var(name=state) }
+              Call(target=weatherRadarTick) { Var(name=state) }
+              Call(target=weatherWidth) { Var(name=state) }
+              Call(target=weatherHeight) { Var(name=state) }
+              Lit(value=0)
+              Lit(value=0)
+              Lit(value="forecast")
+              Var(name=reqState)
+              Lit(value=0)
+              Call(target=weatherTemperatureUnit) { Var(name=state) }
+              Call(target=weatherSettingsOpen) { Var(name=state) }
+              Call(target=weatherUiPlatform) { Var(name=state) }
+            }
             Lit(value=true)
-            Lit(value=false)
-            Lit(value="")
-            Var(name=label)
-            Var(name=lat)
-            Var(name=lon)
-            Lit(value="")
-            Lit(value="Loading weather...")
-            Call(target=weatherRadarOpen) { Var(name=state) }
-            Call(target=weatherRadarTick) { Var(name=state) }
-            Call(target=weatherWidth) { Var(name=state) }
-            Call(target=weatherHeight) { Var(name=state) }
-            Lit(value=0)
-            Lit(value=0)
-            Lit(value="forecast")
-            Var(name=reqState)
-            Lit(value=0)
-            Call(target=weatherTemperatureUnit) { Var(name=state) }
-            Call(target=weatherSettingsOpen) { Var(name=state) }
-            Call(target=weatherUiPlatform) { Var(name=state) }
           }
         }
       }
@@ -237,6 +301,11 @@ Program {
               }
               Block {
                 Let(name=forecast) { Call(target=bodyFromHttp) { Call(target=httpRequestResponse) { Var(name=netStateNow) } } }
+                If {
+                  Eq { Var(name=forecast) Lit(value="") }
+                  Block { Lit(value=0) }
+                  Block { Call(target=localSet) { Lit(value="codes.ailang.examples.weather") Lit(value="forecastBody") Var(name=forecast) } }
+                }
                 Return {
                   Call(target=weatherState) {
                     Call(target=weatherQuery) { Var(name=state) }
@@ -312,6 +381,7 @@ Program {
           Block { Return { Var(name=state) } }
           Block { Lit(value=0) }
         }
+        Call(target=localSet) { Lit(value="codes.ailang.examples.weather") Lit(value="temperatureUnit") Var(name=temperatureUnit) }
         Let(name=updatedState) { Call(target=weatherWithTemperatureUnit) { Var(name=state) Var(name=temperatureUnit) } }
         Let(name=lat) { Call(target=weatherSelectedLat) { Var(name=state) } }
         Let(name=lon) { Call(target=weatherSelectedLon) { Var(name=state) } }
@@ -452,6 +522,17 @@ Program {
               }
             }
             If {
+              Eq { Call(target=weatherHasStoredLocation) { Var(name=state) } Lit(value=true) }
+              Block {
+                If {
+                  Eq { Var(name=isSettingsSurface) Lit(value=true) }
+                  Block { Lit(value=0) }
+                  Block { Return { Var(name=state) } }
+                }
+              }
+              Block { Lit(value=0) }
+            }
+            If {
               Eq { Var(name=isSettingsSurface) Lit(value=true) }
               Block {
                 Let(name=settingsPanelX) {
@@ -562,6 +643,11 @@ Program {
         If {
           Call(target=eventIsKeyboardLike) { Var(name=rawEvent) }
           Block {
+            If {
+              Eq { Call(target=weatherHasStoredLocation) { Var(name=state) } Lit(value=true) }
+              Block { Return { Var(name=state) } }
+              Block { Lit(value=0) }
+            }
             If {
               Eq { Call(target=weatherFocused) { Var(name=state) } Lit(value=true) }
               Block {
