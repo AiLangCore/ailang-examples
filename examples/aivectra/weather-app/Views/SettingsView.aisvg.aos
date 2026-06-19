@@ -1,0 +1,30 @@
+Program {
+  Export(name=settingsViewWidth)
+  Export(name=settingsViewHeight)
+  Export(name=settingsViewTitle)
+  Export(name=settingsViewUnitsLabel)
+
+  Let(name=settingsViewWidth) {
+    Fn(params=_) {
+      Block { Return { Lit(value=420) } }
+    }
+  }
+
+  Let(name=settingsViewHeight) {
+    Fn(params=_) {
+      Block { Return { Lit(value=300) } }
+    }
+  }
+
+  Let(name=settingsViewTitle) {
+    Fn(params=_) {
+      Block { Return { Lit(value="Settings") } }
+    }
+  }
+
+  Let(name=settingsViewUnitsLabel) {
+    Fn(params=_) {
+      Block { Return { Lit(value="Temperature units") } }
+    }
+  }
+}

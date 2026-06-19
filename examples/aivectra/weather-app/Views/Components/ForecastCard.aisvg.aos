@@ -1,0 +1,107 @@
+Program {
+  Import(path="../../src/weather/text.aos")
+
+  Export(name=forecastCardDailyValue)
+  Export(name=forecastCardDayLabel)
+  Export(name=forecastCardCondition)
+  Export(name=forecastCardIconKind)
+  Export(name=forecastCardHighLow)
+  Export(name=forecastCardPrecipitation)
+
+  Let(name=forecastCardDailyValue) {
+    Fn(params=forecastBody,key,dayIndex) {
+      Block {
+        Let(name=dailyStart) { Call(target=findFrom) { Var(name=forecastBody) Lit(value="\"daily\":{") Lit(value=0) } }
+        If {
+          Call(target=lt) { Var(name=dailyStart) Lit(value=0) }
+          Block { Return { Lit(value="") } }
+          Block {
+            Return {
+              Call(target=csvNth) {
+                Call(target=arrayListForKey) { Var(name=forecastBody) Var(name=key) Var(name=dailyStart) }
+                Var(name=dayIndex)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=forecastCardDayLabel) {
+    Fn(params=dayIndex) {
+      Block {
+        If { Eq { Var(name=dayIndex) Lit(value=1) } Block { Return { Lit(value="Today") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=dayIndex) Lit(value=2) } Block { Return { Lit(value="+1 day") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=dayIndex) Lit(value=3) } Block { Return { Lit(value="+2 days") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=dayIndex) Lit(value=4) } Block { Return { Lit(value="+3 days") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=dayIndex) Lit(value=5) } Block { Return { Lit(value="+4 days") } } Block { Lit(value=0) } }
+        Return { Lit(value="+5 days") }
+      }
+    }
+  }
+
+  Let(name=forecastCardCondition) {
+    Fn(params=code) {
+      Block {
+        If { Eq { Var(name=code) Lit(value="0") } Block { Return { Lit(value="Sunny") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="1") } Block { Return { Lit(value="Mostly sun") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="2") } Block { Return { Lit(value="Partly cloudy") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="3") } Block { Return { Lit(value="Cloudy") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="45") } Block { Return { Lit(value="Fog") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="48") } Block { Return { Lit(value="Fog") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="71") } Block { Return { Lit(value="Snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="73") } Block { Return { Lit(value="Snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="75") } Block { Return { Lit(value="Snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="95") } Block { Return { Lit(value="Storms") } } Block { Lit(value=0) } }
+        Return { Lit(value="Rain") }
+      }
+    }
+  }
+
+  Let(name=forecastCardIconKind) {
+    Fn(params=code) {
+      Block {
+        If { Eq { Var(name=code) Lit(value="0") } Block { Return { Lit(value="sun") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="1") } Block { Return { Lit(value="sun") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="2") } Block { Return { Lit(value="partly") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="3") } Block { Return { Lit(value="cloud") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="45") } Block { Return { Lit(value="cloud") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="48") } Block { Return { Lit(value="cloud") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="71") } Block { Return { Lit(value="snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="73") } Block { Return { Lit(value="snow") } } Block { Lit(value=0) } }
+        If { Eq { Var(name=code) Lit(value="75") } Block { Return { Lit(value="snow") } } Block { Lit(value=0) } }
+        Return { Lit(value="rain") }
+      }
+    }
+  }
+
+  Let(name=forecastCardHighLow) {
+    Fn(params=maxVal,minVal,temperatureUnit) {
+      Block {
+        Return {
+          StrConcat {
+            Var(name=maxVal)
+            StrConcat {
+              Lit(value="/")
+              StrConcat {
+                Var(name=minVal)
+                If {
+                  Eq { Var(name=temperatureUnit) Lit(value="f") }
+                  Block { Lit(value=" F") }
+                  Block { Lit(value=" C") }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Let(name=forecastCardPrecipitation) {
+    Fn(params=precipVal) {
+      Block { Return { StrConcat { Lit(value="Precip ") StrConcat { Var(name=precipVal) Lit(value="%") } } } }
+    }
+  }
+}

@@ -2,6 +2,8 @@ Program {
   Import(package="aivectra" path="src/AiVectra/src/lib.aos")
   Import(package="aivectra" path="src/AiVectra/src/aisvg.aos")
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
+  Import(path="../../Views/MainView.aisvg.aos")
+  Import(path="../../Views/SettingsView.aisvg.aos")
   Import(path="text.aos")
   Import(path="parse.aos")
   Import(path="forecast.aos")
@@ -13,13 +15,13 @@ Program {
 
   Let(name=weatherSettingsPanelX) {
     Fn(params=w) {
-      Block { Return { Call(target=popupCenterX) { Var(name=w) Lit(value=420) } } }
+      Block { Return { Call(target=popupCenterX) { Var(name=w) Call(target=settingsViewWidth) { Lit(value=0) } } } }
     }
   }
 
   Let(name=weatherSettingsPanelY) {
     Fn(params=h) {
-      Block { Return { Call(target=popupCenterY) { Var(name=h) Lit(value=300) } } }
+      Block { Return { Call(target=popupCenterY) { Var(name=h) Call(target=settingsViewHeight) { Lit(value=0) } } } }
     }
   }
 
@@ -33,7 +35,7 @@ Program {
             Lit(value="settings.units.label")
             Add { Var(name=x) Lit(value=40) }
             Add { Var(name=y) Lit(value=76) }
-            Lit(value="Temperature units")
+            Call(target=settingsViewUnitsLabel) { Lit(value=0) }
             Lit(value="#cbd5e1")
             Lit(value=15)
           }
@@ -108,7 +110,7 @@ Program {
         Call(target=sys.ui.beginFrame) { Var(name=handle) }
         Call(target=aisvgRender) {
           Var(name=handle)
-          Call(target=aisvgSvg) { Lit(value="settings.root") Lit(value=420) Lit(value=300) Lit(value="#0f172a") }
+          Call(target=aisvgSvg) { Lit(value="settings.root") Call(target=settingsViewWidth) { Lit(value=0) } Call(target=settingsViewHeight) { Lit(value=0) } Lit(value="#0f172a") }
         }
         Call(target=renderSettingsPanelContent) { Var(name=handle) Var(name=temperatureUnit) }
         Call(target=sys.ui.endFrame) { Var(name=handle) }
@@ -276,22 +278,10 @@ Program {
         }
 
         Let(name=forecastY) {
-          If {
-            Eq { Var(name=hasStoredLocation) Lit(value=true) }
-            Block { Lit(value=92) }
-            Block { Lit(value=146) }
-          }
+          Call(target=mainViewForecastY) { Var(name=hasStoredLocation) }
         }
-        Let(name=forecastBottom) { Add { Var(name=h) Lit(value=-56) } }
-        Let(name=forecastHRaw) { Call(target=sub) { Var(name=forecastBottom) Var(name=forecastY) } }
-        Let(name=forecastH) {
-          If {
-            Call(target=intLt) { Var(name=forecastHRaw) Lit(value=96) }
-            Block { Lit(value=96) }
-            Block { Var(name=forecastHRaw) }
-          }
-        }
-        Let(name=forecastW) { Add { Var(name=w) Lit(value=-80) } }
+        Let(name=forecastH) { Call(target=mainViewForecastHeight) { Var(name=h) Var(name=forecastY) } }
+        Let(name=forecastW) { Call(target=mainViewForecastWidth) { Var(name=w) } }
         Call(target=aisvgRender) {
           Var(name=handle)
           Call(target=aisvgRect) {
@@ -311,7 +301,7 @@ Program {
             Lit(value="weather.current.title")
             Lit(value=56)
             Add { Var(name=forecastY) Lit(value=12) }
-            If { Eq { Var(name=selectedLabel) Lit(value="") } Block { Lit(value="Current: (no location loaded)") } Block { StrConcat { Lit(value="Current: ") Var(name=selectedLabel) } } }
+            Call(target=mainViewCurrentTitle) { Var(name=selectedLabel) }
             Lit(value="#ffffff")
             Lit(value=18)
           }
@@ -322,7 +312,7 @@ Program {
             Lit(value="weather.current.summary")
             Lit(value=56)
             Add { Var(name=forecastY) Lit(value=42) }
-            If { Eq { Var(name=forecastBody) Lit(value="") } Block { Lit(value="Submit a location to fetch weather.") } Block { Call(target=currentLineFromForecast) { Var(name=forecastBody) Var(name=temperatureUnit) } } }
+            Call(target=mainViewCurrentSummary) { Var(name=forecastBody) Var(name=temperatureUnit) }
             Lit(value="#cbd5e1")
             Lit(value=16)
           }
@@ -367,13 +357,13 @@ Program {
               }
             }
             Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.radar.message") Lit(value=112) Lit(value=452) Lit(value="Radar loop panel (image syscall pending)") Lit(value="#e2e8f0") Lit(value=14) } }
-            Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.radar.frame") Lit(value=112) Lit(value=474) StrConcat { Lit(value="Frame: ") ToString { Var(name=radarTick) } } Lit(value="#93c5fd") Lit(value=14) } }
+            Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.radar.frame") Lit(value=112) Lit(value=474) Call(target=mainViewRadarFrame) { Var(name=radarTick) } Lit(value="#93c5fd") Lit(value=14) } }
             Lit(value=0)
           }
           Block { Lit(value=0) }
         }
 
-        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.status") Lit(value=40) Add { Var(name=h) Lit(value=-28) } Var(name=statusLine) Lit(value="#e2e8f0") Lit(value=14) } }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.status") Lit(value=40) Call(target=mainViewStatusY) { Var(name=h) } Var(name=statusLine) Lit(value="#e2e8f0") Lit(value=14) } }
 
         If {
           Eq { Var(name=settingsOpen) Lit(value=true) }

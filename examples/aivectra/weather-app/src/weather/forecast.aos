@@ -4,6 +4,8 @@ Program {
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(path="text.aos")
   Import(path="parse.aos")
+  Import(path="../../Views/Components/ForecastCard.aisvg.aos")
+  Import(path="../../Views/Components/WeatherIcon.aisvg.aos")
 
   Export(name=renderForecastCards)
 
@@ -115,7 +117,7 @@ Program {
     Fn(params=handle,x,y,kind) {
       Block {
         If {
-          Eq { Var(name=kind) Lit(value="sun") }
+          Call(target=weatherIconIsSun) { Var(name=kind) }
           Block {
             Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgEllipse) { Lit(value="forecast.sun.core") Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=10) } Lit(value=32) Lit(value=32) Lit(value="#facc15") Lit(value="none") Lit(value=0) } }
             Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgLine) { Lit(value="forecast.sun.ray.top") Add { Var(name=x) Lit(value=30) } Var(name=y) Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=7) } Lit(value="#fde68a") Lit(value=2) } }
@@ -135,7 +137,7 @@ Program {
                   Block { Return { Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=8) } Add { Var(name=y) Lit(value=10) } Lit(value="#cbd5e1") } } }
                   Block {
                     If {
-                      Eq { Var(name=kind) Lit(value="snow") }
+                      Call(target=weatherIconIsSnow) { Var(name=kind) }
                       Block {
                         Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=8) } Add { Var(name=y) Lit(value=8) } Lit(value="#cbd5e1") }
                         Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.snow.flakes") Add { Var(name=x) Lit(value=16) } Add { Var(name=y) Lit(value=44) } Lit(value="*  *  *") Lit(value="#bfdbfe") Lit(value=14) } }
@@ -161,26 +163,26 @@ Program {
   Let(name=forecastCard) {
     Fn(params=handle,forecastBody,temperatureUnit,dayIndex,x,y,w,h) {
       Block {
-        Let(name=maxVal) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"temperature_2m_max\":[") Var(name=dayIndex) } }
-        Let(name=minVal) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"temperature_2m_min\":[") Var(name=dayIndex) } }
-        Let(name=precipVal) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"precipitation_probability_max\":[") Var(name=dayIndex) } }
-        Let(name=code) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"weather_code\":[") Var(name=dayIndex) } }
+        Let(name=maxVal) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"temperature_2m_max\":[") Var(name=dayIndex) } }
+        Let(name=minVal) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"temperature_2m_min\":[") Var(name=dayIndex) } }
+        Let(name=precipVal) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"precipitation_probability_max\":[") Var(name=dayIndex) } }
+        Let(name=code) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"weather_code\":[") Var(name=dayIndex) } }
         Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgRect) { Lit(value="forecast.card") Var(name=x) Var(name=y) Var(name=w) Var(name=h) Lit(value="#111827") Lit(value="none") Lit(value=0) } }
-        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.day") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=10) } Call(target=forecastDayLabel) { Var(name=dayIndex) } Lit(value="#ffffff") Lit(value=14) } }
-        Call(target=drawForecastIcon) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=32) } Call(target=forecastIconKind) { Var(name=code) } }
-        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.condition") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=94) } Call(target=forecastConditionShort) { Var(name=code) } Lit(value="#cbd5e1") Lit(value=12) } }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.day") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=10) } Call(target=forecastCardDayLabel) { Var(name=dayIndex) } Lit(value="#ffffff") Lit(value=14) } }
+        Call(target=drawForecastIcon) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=32) } Call(target=forecastCardIconKind) { Var(name=code) } }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.condition") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=94) } Call(target=forecastCardCondition) { Var(name=code) } Lit(value="#cbd5e1") Lit(value=12) } }
         Call(target=aisvgRender) {
           Var(name=handle)
           Call(target=aisvgText) {
             Lit(value="forecast.card.temp")
             Add { Var(name=x) Lit(value=12) }
             Add { Var(name=y) Lit(value=116) }
-            StrConcat { Var(name=maxVal) StrConcat { Lit(value="/") StrConcat { Var(name=minVal) If { Eq { Var(name=temperatureUnit) Lit(value="f") } Block { Lit(value=" F") } Block { Lit(value=" C") } } } } }
+            Call(target=forecastCardHighLow) { Var(name=maxVal) Var(name=minVal) Var(name=temperatureUnit) }
             Lit(value="#f8fafc")
             Lit(value=14)
           }
         }
-        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.precip") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=140) } StrConcat { Lit(value="Precip ") StrConcat { Var(name=precipVal) Lit(value="%") } } Lit(value="#93c5fd") Lit(value=12) } }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.precip") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=140) } Call(target=forecastCardPrecipitation) { Var(name=precipVal) } Lit(value="#93c5fd") Lit(value=12) } }
         Return { Lit(value=0) }
       }
     }

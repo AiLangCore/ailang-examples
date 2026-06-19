@@ -1,0 +1,79 @@
+Program {
+  Import(path="../src/weather/parse.aos")
+
+  Export(name=mainViewForecastY)
+  Export(name=mainViewForecastHeight)
+  Export(name=mainViewForecastWidth)
+  Export(name=mainViewCurrentTitle)
+  Export(name=mainViewCurrentSummary)
+  Export(name=mainViewStatusY)
+  Export(name=mainViewRadarFrame)
+
+  Let(name=mainViewForecastY) {
+    Fn(params=hasStoredLocation) {
+      Block {
+        If {
+          Eq { Var(name=hasStoredLocation) Lit(value=true) }
+          Block { Return { Lit(value=92) } }
+          Block { Return { Lit(value=146) } }
+        }
+      }
+    }
+  }
+
+  Let(name=mainViewForecastHeight) {
+    Fn(params=windowHeight,forecastY) {
+      Block {
+        Let(name=forecastBottom) { Add { Var(name=windowHeight) Lit(value=-56) } }
+        Let(name=forecastHRaw) { Call(target=sub) { Var(name=forecastBottom) Var(name=forecastY) } }
+        If {
+          Call(target=intLt) { Var(name=forecastHRaw) Lit(value=96) }
+          Block { Return { Lit(value=96) } }
+          Block { Return { Var(name=forecastHRaw) } }
+        }
+      }
+    }
+  }
+
+  Let(name=mainViewForecastWidth) {
+    Fn(params=windowWidth) {
+      Block { Return { Add { Var(name=windowWidth) Lit(value=-80) } } }
+    }
+  }
+
+  Let(name=mainViewCurrentTitle) {
+    Fn(params=selectedLabel) {
+      Block {
+        If {
+          Eq { Var(name=selectedLabel) Lit(value="") }
+          Block { Return { Lit(value="Current: (no location loaded)") } }
+          Block { Return { StrConcat { Lit(value="Current: ") Var(name=selectedLabel) } } }
+        }
+      }
+    }
+  }
+
+  Let(name=mainViewCurrentSummary) {
+    Fn(params=forecastBody,temperatureUnit) {
+      Block {
+        If {
+          Eq { Var(name=forecastBody) Lit(value="") }
+          Block { Return { Lit(value="Submit a location to fetch weather.") } }
+          Block { Return { Call(target=currentLineFromForecast) { Var(name=forecastBody) Var(name=temperatureUnit) } } }
+        }
+      }
+    }
+  }
+
+  Let(name=mainViewStatusY) {
+    Fn(params=windowHeight) {
+      Block { Return { Add { Var(name=windowHeight) Lit(value=-28) } } }
+    }
+  }
+
+  Let(name=mainViewRadarFrame) {
+    Fn(params=radarTick) {
+      Block { Return { StrConcat { Lit(value="Frame: ") ToString { Var(name=radarTick) } } } }
+    }
+  }
+}

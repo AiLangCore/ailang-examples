@@ -1,0 +1,35 @@
+Program {
+  Export(name=weatherIconIsSun)
+  Export(name=weatherIconIsCloud)
+  Export(name=weatherIconIsRain)
+  Export(name=weatherIconIsSnow)
+
+  Let(name=weatherIconIsSun) {
+    Fn(params=kind) {
+      Block { Return { Eq { Var(name=kind) Lit(value="sun") } } }
+    }
+  }
+
+  Let(name=weatherIconIsCloud) {
+    Fn(params=kind) {
+      Block {
+        If { Eq { Var(name=kind) Lit(value="cloud") } Block { Return { Lit(value=true) } } Block { Lit(value=0) } }
+        If { Eq { Var(name=kind) Lit(value="rain") } Block { Return { Lit(value=true) } } Block { Lit(value=0) } }
+        If { Eq { Var(name=kind) Lit(value="snow") } Block { Return { Lit(value=true) } } Block { Lit(value=0) } }
+        Return { Eq { Var(name=kind) Lit(value="partly") } }
+      }
+    }
+  }
+
+  Let(name=weatherIconIsRain) {
+    Fn(params=kind) {
+      Block { Return { Eq { Var(name=kind) Lit(value="rain") } } }
+    }
+  }
+
+  Let(name=weatherIconIsSnow) {
+    Fn(params=kind) {
+      Block { Return { Eq { Var(name=kind) Lit(value="snow") } } }
+    }
+  }
+}
