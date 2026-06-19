@@ -1,0 +1,248 @@
+Svg MainView
+{
+    ViewBox 0 0 model.width model.height
+
+    Rect weather.root
+    {
+        X 0
+        Y 0
+        Width model.width
+        Height model.height
+        Fill "#0f172a"
+    }
+
+    Rect weather.surface
+    {
+        X 20
+        Y 20
+        Width model.surfaceWidth
+        Height model.surfaceHeight
+        Fill "#0f172a"
+    }
+
+    Text weather.title
+    {
+        X 40
+        Y 40
+        FontSize 26
+        Fill "#ffffff"
+        Value "Weather App"
+        Role heading
+        TestId weatherTitle
+    }
+
+    Group weather.search
+    {
+        Visible model.showSearch
+
+        Text weather.query.label
+        {
+            X 40
+            Y 74
+            FontSize 14
+            Fill "#cbd5e1"
+            Value "ZIP, city, or city,state"
+        }
+
+        Rect weather.query.entry
+        {
+            X 40
+            Y 74
+            Width model.entryWidth
+            Height 44
+            Fill "#111827"
+            Stroke model.queryStroke
+            StrokeWidth 2
+            Action focusQuery
+            TestId weatherQuery
+        }
+
+        Text weather.query.value
+        {
+            X 56
+            Y 88
+            FontSize 18
+            Fill "#f8fafc"
+            Value model.queryDisplay
+        }
+    }
+
+    Group weather.location.dropdown
+    {
+        Visible model.dropdownOpen
+
+        Rect weather.location.dropdown.panel
+        {
+            X 40
+            Y 138
+            Width model.entryWidth
+            Height model.dropdownHeight
+            Fill "#1e293b"
+        }
+
+        Text weather.location.option1
+        {
+            X 56
+            Y 148
+            FontSize 16
+            Fill "#e2e8f0"
+            Value model.locationOption1
+            Action selectLocation1
+        }
+
+        Text weather.location.option2
+        {
+            X 56
+            Y 180
+            FontSize 16
+            Fill "#e2e8f0"
+            Value model.locationOption2
+            Action selectLocation2
+        }
+
+        Text weather.location.option3
+        {
+            X 56
+            Y 212
+            FontSize 16
+            Fill "#e2e8f0"
+            Value model.locationOption3
+            Action selectLocation3
+        }
+    }
+
+    Rect weather.forecast.panel
+    {
+        X 40
+        Y model.forecastY
+        Width model.forecastWidth
+        Height model.forecastHeight
+        Fill "#1e293b"
+    }
+
+    Text weather.current.title
+    {
+        X 56
+        Y model.currentTitleY
+        FontSize 18
+        Fill "#ffffff"
+        Value model.currentTitle
+        Role heading
+    }
+
+    Text weather.current.summary
+    {
+        X 56
+        Y model.currentSummaryY
+        FontSize 16
+        Fill "#cbd5e1"
+        Value model.currentSummary
+    }
+
+    Use ForecastCard today
+    {
+        X model.todayX
+        Y model.todayY
+        DayLabel "Today"
+        Icon model.day1Icon
+        Condition model.day1Condition
+        HighLow model.day1HighLow
+        Precipitation model.day1Precipitation
+    }
+
+    Group weather.forecast.nextFive
+    {
+        X 56
+        Y model.nextFiveY
+        Layout horizontal
+        OverflowX scroll
+
+        Use ForecastCard day2
+        {
+            DayLabel "+1 day"
+            Icon model.day2Icon
+            Condition model.day2Condition
+            HighLow model.day2HighLow
+            Precipitation model.day2Precipitation
+        }
+
+        Use ForecastCard day3
+        {
+            DayLabel "+2 days"
+            Icon model.day3Icon
+            Condition model.day3Condition
+            HighLow model.day3HighLow
+            Precipitation model.day3Precipitation
+        }
+
+        Use ForecastCard day4
+        {
+            DayLabel "+3 days"
+            Icon model.day4Icon
+            Condition model.day4Condition
+            HighLow model.day4HighLow
+            Precipitation model.day4Precipitation
+        }
+
+        Use ForecastCard day5
+        {
+            DayLabel "+4 days"
+            Icon model.day5Icon
+            Condition model.day5Condition
+            HighLow model.day5HighLow
+            Precipitation model.day5Precipitation
+        }
+
+        Use ForecastCard day6
+        {
+            DayLabel "+5 days"
+            Icon model.day6Icon
+            Condition model.day6Condition
+            HighLow model.day6HighLow
+            Precipitation model.day6Precipitation
+        }
+    }
+
+    Group weather.radar
+    {
+        Visible model.radarOpen
+
+        Rect weather.radar.panel
+        {
+            X 96
+            Y 438
+            Width model.radarWidth
+            Height model.radarHeight
+            Fill "#0b1120"
+        }
+
+        Text weather.radar.message
+        {
+            X 112
+            Y 452
+            FontSize 14
+            Fill "#e2e8f0"
+            Value "Radar loop panel (image syscall pending)"
+        }
+
+        Text weather.radar.frame
+        {
+            X 112
+            Y 474
+            FontSize 14
+            Fill "#93c5fd"
+            Value model.radarFrame
+        }
+    }
+
+    Text weather.status
+    {
+        X 40
+        Y model.statusY
+        FontSize 14
+        Fill "#e2e8f0"
+        Value model.statusLine
+        Role status
+        TestId weatherStatus
+    }
+}

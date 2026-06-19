@@ -1,0 +1,64 @@
+Component ForecastCard
+{
+    Props
+    {
+        DayLabel Text
+        Icon Text
+        Condition Text
+        HighLow Text
+        Precipitation Text
+    }
+
+    Svg
+    {
+        Rect forecast.card
+        {
+            Width 160
+            Height 158
+            Fill "#111827"
+        }
+
+        Text forecast.card.day
+        {
+            X 12
+            Y 10
+            FontSize 14
+            Fill "#ffffff"
+            Value DayLabel
+        }
+
+        Use WeatherIcon icon
+        {
+            X 12
+            Y 32
+            Kind Icon
+        }
+
+        Text forecast.card.condition
+        {
+            X 12
+            Y 94
+            FontSize 12
+            Fill "#cbd5e1"
+            Value Condition
+        }
+
+        Text forecast.card.temp
+        {
+            X 12
+            Y 116
+            FontSize 14
+            Fill "#f8fafc"
+            Value HighLow
+        }
+
+        Text forecast.card.precipitation
+        {
+            X 12
+            Y 140
+            FontSize 12
+            Fill "#93c5fd"
+            Value Precipitation
+        }
+    }
+}

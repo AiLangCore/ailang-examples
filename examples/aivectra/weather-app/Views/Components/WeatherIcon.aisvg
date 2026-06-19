@@ -1,0 +1,111 @@
+Component WeatherIcon
+{
+    Props
+    {
+        Kind Text
+    }
+
+    Svg
+    {
+        Group sun
+        {
+            Visible Kind == "sun"
+
+            Ellipse forecast.sun.core
+            {
+                X 14
+                Y 10
+                Width 32
+                Height 32
+                Fill "#facc15"
+            }
+
+            Line forecast.sun.ray.top
+            {
+                X1 30
+                Y1 0
+                X2 30
+                Y2 7
+                Stroke "#fde68a"
+                StrokeWidth 2
+            }
+
+            Line forecast.sun.ray.bottom
+            {
+                X1 30
+                Y1 45
+                X2 30
+                Y2 52
+                Stroke "#fde68a"
+                StrokeWidth 2
+            }
+        }
+
+        Group cloud
+        {
+            Visible Kind == "cloud" || Kind == "rain" || Kind == "snow" || Kind == "partly"
+
+            Ellipse forecast.cloud.base
+            {
+                X 8
+                Y 28
+                Width 48
+                Height 22
+                Fill "#cbd5e1"
+            }
+
+            Ellipse forecast.cloud.left
+            {
+                X 22
+                Y 18
+                Width 28
+                Height 28
+                Fill "#cbd5e1"
+            }
+
+            Ellipse forecast.cloud.right
+            {
+                X 40
+                Y 24
+                Width 24
+                Height 24
+                Fill "#cbd5e1"
+            }
+        }
+
+        Group rain
+        {
+            Visible Kind == "rain"
+
+            Line forecast.rain.drop1
+            {
+                X1 20
+                Y1 42
+                X2 14
+                Y2 54
+                Stroke "#38bdf8"
+                StrokeWidth 2
+            }
+
+            Line forecast.rain.drop2
+            {
+                X1 34
+                Y1 42
+                X2 28
+                Y2 54
+                Stroke "#38bdf8"
+                StrokeWidth 2
+            }
+        }
+
+        Text snow
+        {
+            Visible Kind == "snow"
+            X 16
+            Y 44
+            FontSize 14
+            Fill "#bfdbfe"
+            Value "*  *  *"
+        }
+    }
+}

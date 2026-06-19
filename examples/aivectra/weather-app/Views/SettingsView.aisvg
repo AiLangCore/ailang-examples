@@ -1,0 +1,72 @@
+Svg SettingsView
+{
+    ViewBox 0 0 420 300
+
+    Rect settings.root
+    {
+        X 0
+        Y 0
+        Width 420
+        Height 300
+        Fill "#0f172a"
+    }
+
+    Rect settings.panel
+    {
+        X 0
+        Y 0
+        Width 420
+        Height 300
+        Fill "#1e293b"
+    }
+
+    Text settings.title
+    {
+        X 32
+        Y 28
+        FontSize 20
+        Fill "#ffffff"
+        Value "Settings"
+        Role heading
+    }
+
+    Text settings.units.label
+    {
+        X 40
+        Y 76
+        FontSize 15
+        Fill "#cbd5e1"
+        Value "Temperature units"
+    }
+
+    Group settings.units
+    {
+        Radio settings.unit.c
+        {
+            X 78
+            Y 112
+            Label "Celsius"
+            Checked model.temperatureUnit == "c"
+            Action setCelsius
+        }
+
+        Radio settings.unit.f
+        {
+            X 218
+            Y 112
+            Label "Fahrenheit"
+            Checked model.temperatureUnit == "f"
+            Action setFahrenheit
+        }
+    }
+
+    Button settings.close
+    {
+        X 154
+        Y 202
+        Width 112
+        Height 36
+        Label "Done"
+        Action closeSettings
+    }
+}

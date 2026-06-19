@@ -26,9 +26,16 @@ src/weather/ui.aos     # Weather-specific layout using vectra-ui controls
 src/weather/text.aos   # focused string/search helpers
 src/weather/http.aos   # Open-Meteo request paths and HTTP boundary
 src/weather/parse.aos  # geocode and forecast response parsing
+Views/                 # declarative AiSVG view source
 Assets/icons/          # standard AiVectra app icon metadata
 Targets/               # target-specific app metadata
 ```
+
+The current beta lowers the AiSVG view intent through `src/weather/ui.aos` and
+`src/weather/forecast.aos` using the `aivectra.aisvg` scene-record API. The
+`.aisvg` files are the declarative view source for the example; the companion
+`.aos` modules own model, update, HTTP, and rendering glue until the AiSVG file
+compiler is available.
 
 ## Dependencies
 
