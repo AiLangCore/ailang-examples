@@ -1,5 +1,5 @@
 Program {
-  Import(path="../src/weather/parse.aos")
+  Import(path="../weather/parse.aos")
 
   Export(name=mainViewForecastY)
   Export(name=mainViewForecastHeight)

@@ -22,11 +22,11 @@ Use `ailang aivectra ...` only for explicit AiVectra tool commands.
 
 ```text
 src/app.aos            # entry point, UI rendering, event flow
+src/Views/             # declarative AiSVG view source and code-behind
 src/weather/ui.aos     # Weather-specific layout using vectra-ui controls
 src/weather/text.aos   # focused string/search helpers
 src/weather/http.aos   # Open-Meteo request paths and HTTP boundary
 src/weather/parse.aos  # geocode and forecast response parsing
-Views/                 # declarative AiSVG view source
 Assets/icons/          # standard AiVectra app icon metadata
 Targets/               # target-specific app metadata
 ```

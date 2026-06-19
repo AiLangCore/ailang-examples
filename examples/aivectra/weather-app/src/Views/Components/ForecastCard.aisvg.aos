@@ -1,5 +1,5 @@
 Program {
-  Import(path="../../src/weather/text.aos")
+  Import(path="../../weather/text.aos")
 
   Export(name=forecastCardDailyValue)
   Export(name=forecastCardDayLabel)

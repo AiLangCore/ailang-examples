@@ -4,8 +4,8 @@ Program {
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(path="text.aos")
   Import(path="parse.aos")
-  Import(path="../../Views/Components/ForecastCard.aisvg.aos")
-  Import(path="../../Views/Components/WeatherIcon.aisvg.aos")
+  Import(path="../Views/Components/ForecastCard.aisvg.aos")
+  Import(path="../Views/Components/WeatherIcon.aisvg.aos")
 
   Export(name=renderForecastCards)
 
