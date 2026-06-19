@@ -488,7 +488,7 @@ Program {
           Block { Lit(value=0) }
           Block {
             Let(name=forecastRowW) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-112) } }
-            Let(name=forecastRowContentW) { Lit(value=880) }
+            Let(name=forecastRowContentW) { Lit(value=1220) }
             Let(name=nextForecastScrollOffset) {
               Call(target=horizontalScrollerEventOffset) {
                 Var(name=forecastRowW)

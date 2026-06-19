@@ -200,16 +200,16 @@ Program {
             Let(name=rowX) { Lit(value=56) }
             Let(name=rowY) { Add { Var(name=forecastY) Lit(value=282) } }
             Let(name=rowW) { Add { Var(name=windowWidth) Lit(value=-112) } }
-            Let(name=rowContentW) { Lit(value=880) }
+            Let(name=rowContentW) { Lit(value=1220) }
             Let(name=rowOffset) { Call(target=horizontalScrollerClampOffset) { Var(name=rowW) Var(name=rowContentW) Var(name=scrollOffset) } }
             Let(name=rowContentX) { Call(target=sub) { Var(name=rowX) Var(name=rowOffset) } }
             Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.today.heading") Var(name=todayX) Add { Var(name=forecastY) Lit(value=52) } Lit(value="Today") Lit(value="#f8fafc") Lit(value=24) } }
             Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=1) Var(name=todayX) Add { Var(name=forecastY) Lit(value=84) } Var(name=todayW) Lit(value=176) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=2) Var(name=rowContentX) Var(name=rowY) Lit(value=160) Lit(value=158) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=3) Add { Var(name=rowContentX) Lit(value=180) } Var(name=rowY) Lit(value=160) Lit(value=158) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=4) Add { Var(name=rowContentX) Lit(value=360) } Var(name=rowY) Lit(value=160) Lit(value=158) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=5) Add { Var(name=rowContentX) Lit(value=540) } Var(name=rowY) Lit(value=160) Lit(value=158) }
-            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=6) Add { Var(name=rowContentX) Lit(value=720) } Var(name=rowY) Lit(value=160) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=2) Var(name=rowContentX) Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=3) Add { Var(name=rowContentX) Lit(value=250) } Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=4) Add { Var(name=rowContentX) Lit(value=500) } Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=5) Add { Var(name=rowContentX) Lit(value=750) } Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Lit(value=6) Add { Var(name=rowContentX) Lit(value=1000) } Var(name=rowY) Lit(value=220) Lit(value=158) }
             Call(target=horizontalScroller) { Var(name=handle) Var(name=rowX) Add { Var(name=rowY) Lit(value=174) } Var(name=rowW) Var(name=rowContentW) Var(name=rowOffset) }
             Return { Lit(value=0) }
           }
