@@ -1,5 +1,6 @@
 Program {
   Import(package="aivectra" path="src/AiVectra/src/lib.aos")
+  Import(package="aivectra" path="src/AiVectra/src/aisvg.aos")
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(path="text.aos")
   Import(path="parse.aos")
@@ -26,7 +27,17 @@ Program {
     Fn(params=handle,x,y,temperatureUnit) {
       Block {
         Call(target=modalPanel) { Var(name=handle) Var(name=x) Var(name=y) Lit(value=420) Lit(value=300) Lit(value="Settings") }
-        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=40) } Add { Var(name=y) Lit(value=76) } Lit(value="Temperature units") Lit(value="#cbd5e1") Lit(value=15) }
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgText) {
+            Lit(value="settings.units.label")
+            Add { Var(name=x) Lit(value=40) }
+            Add { Var(name=y) Lit(value=76) }
+            Lit(value="Temperature units")
+            Lit(value="#cbd5e1")
+            Lit(value=15)
+          }
+        }
         Call(target=renderElement) {
           Var(name=handle)
           Call(target=radioElement) {
@@ -95,7 +106,10 @@ Program {
     Fn(params=handle,temperatureUnit) {
       Block {
         Call(target=sys.ui.beginFrame) { Var(name=handle) }
-        Call(target=sys.ui.drawRect) { Var(name=handle) Lit(value=0) Lit(value=0) Lit(value=420) Lit(value=300) Lit(value="#0f172a") }
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgSvg) { Lit(value="settings.root") Lit(value=420) Lit(value=300) Lit(value="#0f172a") }
+        }
         Call(target=renderSettingsPanelContent) { Var(name=handle) Var(name=temperatureUnit) }
         Call(target=sys.ui.endFrame) { Var(name=handle) }
         Call(target=sys.ui.present) { Var(name=handle) }
@@ -133,10 +147,28 @@ Program {
         }
 
         Call(target=sys.ui.beginFrame) { Var(name=handle) }
-        Call(target=sys.ui.drawRect) { Var(name=handle) Lit(value=0) Lit(value=0) Var(name=w) Var(name=h) Lit(value="#0f172a") }
-        Call(target=sys.ui.drawRect) { Var(name=handle) Lit(value=20) Lit(value=20) Add { Var(name=w) Lit(value=-40) } Add { Var(name=h) Lit(value=-40) } Lit(value="#0f172a") }
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgSvg) { Lit(value="weather.root") Var(name=w) Var(name=h) Lit(value="#0f172a") }
+        }
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgRect) {
+            Lit(value="weather.surface")
+            Lit(value=20)
+            Lit(value=20)
+            Add { Var(name=w) Lit(value=-40) }
+            Add { Var(name=h) Lit(value=-40) }
+            Lit(value="#0f172a")
+            Lit(value="none")
+            Lit(value=0)
+          }
+        }
 
-        Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=40) Lit(value=40) Lit(value="Weather App") Lit(value="#ffffff") Lit(value=26) }
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgText) { Lit(value="weather.title") Lit(value=40) Lit(value=40) Lit(value="Weather App") Lit(value="#ffffff") Lit(value=26) }
+        }
         If {
           Eq { Var(name=usesDesktopMenu) Lit(value=false) }
           Block { Call(target=renderSettingsGear) { Var(name=handle) Add { Var(name=w) Lit(value=-80) } Lit(value=36) } }
@@ -222,14 +254,22 @@ Program {
         If {
           Eq { Var(name=dropdownOpen) Lit(value=true) }
           Block {
-            Call(target=interactiveVectorState) {
-              Var(name=handle) Lit(value=40) Lit(value=138) Var(name=entryW)
-              Add { Lit(value=8) Call(target=mul) { Lit(value=32) Var(name=dropdownCount)} }
-              Lit(value="normal") Lit(value="rect") Lit(value="") Lit(value="#1e293b") Lit(value="#1e293b") Lit(value="#334155") Lit(value="#1e293b") Lit(value="#0f172a")
+            Call(target=aisvgRender) {
+              Var(name=handle)
+              Call(target=aisvgRect) {
+                Lit(value="weather.location.dropdown")
+                Lit(value=40)
+                Lit(value=138)
+                Var(name=entryW)
+                Add { Lit(value=8) Call(target=mul) { Lit(value=32) Var(name=dropdownCount)} }
+                Lit(value="#1e293b")
+                Lit(value="none")
+                Lit(value=0)
+              }
             }
-            If { Call(target=intGte) { Var(name=dropdownCount) Lit(value=1) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Lit(value=148) Call(target=geoLabelAt) { Var(name=geoBody) Lit(value=1) } Lit(value="#e2e8f0") Lit(value=16) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=dropdownCount) Lit(value=2) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Lit(value=180) Call(target=geoLabelAt) { Var(name=geoBody) Lit(value=2) } Lit(value="#e2e8f0") Lit(value=16) } Lit(value=0) } Block { Lit(value=0) } }
-            If { Call(target=intGte) { Var(name=dropdownCount) Lit(value=3) } Block { Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=56) Lit(value=212) Call(target=geoLabelAt) { Var(name=geoBody) Lit(value=3) } Lit(value="#e2e8f0") Lit(value=16) } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=dropdownCount) Lit(value=1) } Block { Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.location.option1") Lit(value=56) Lit(value=148) Call(target=geoLabelAt) { Var(name=geoBody) Lit(value=1) } Lit(value="#e2e8f0") Lit(value=16) } } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=dropdownCount) Lit(value=2) } Block { Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.location.option2") Lit(value=56) Lit(value=180) Call(target=geoLabelAt) { Var(name=geoBody) Lit(value=2) } Lit(value="#e2e8f0") Lit(value=16) } } Lit(value=0) } Block { Lit(value=0) } }
+            If { Call(target=intGte) { Var(name=dropdownCount) Lit(value=3) } Block { Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.location.option3") Lit(value=56) Lit(value=212) Call(target=geoLabelAt) { Var(name=geoBody) Lit(value=3) } Lit(value="#e2e8f0") Lit(value=16) } } Lit(value=0) } Block { Lit(value=0) } }
             Lit(value=0)
           }
           Block { Lit(value=0) }
@@ -252,19 +292,40 @@ Program {
           }
         }
         Let(name=forecastW) { Add { Var(name=w) Lit(value=-80) } }
-        Call(target=interactiveVectorState) {
-          Var(name=handle) Lit(value=40) Var(name=forecastY) Var(name=forecastW) Var(name=forecastH)
-          Lit(value="normal") Lit(value="rect") Lit(value="") Lit(value="#1e293b") Lit(value="#1e293b") Lit(value="#334155") Lit(value="#1e293b") Lit(value="#0f172a")
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgRect) {
+            Lit(value="weather.forecast.panel")
+            Lit(value=40)
+            Var(name=forecastY)
+            Var(name=forecastW)
+            Var(name=forecastH)
+            Lit(value="#1e293b")
+            Lit(value="none")
+            Lit(value=0)
+          }
         }
-        Call(target=sys.ui.drawText) {
-          Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=12) }
-          If { Eq { Var(name=selectedLabel) Lit(value="") } Block { Lit(value="Current: (no location loaded)") } Block { StrConcat { Lit(value="Current: ") Var(name=selectedLabel) } } }
-          Lit(value="#ffffff") Lit(value=18)
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgText) {
+            Lit(value="weather.current.title")
+            Lit(value=56)
+            Add { Var(name=forecastY) Lit(value=12) }
+            If { Eq { Var(name=selectedLabel) Lit(value="") } Block { Lit(value="Current: (no location loaded)") } Block { StrConcat { Lit(value="Current: ") Var(name=selectedLabel) } } }
+            Lit(value="#ffffff")
+            Lit(value=18)
+          }
         }
-        Call(target=sys.ui.drawText) {
-          Var(name=handle) Lit(value=56) Add { Var(name=forecastY) Lit(value=42) }
-          If { Eq { Var(name=forecastBody) Lit(value="") } Block { Lit(value="Submit a location to fetch weather.") } Block { Call(target=currentLineFromForecast) { Var(name=forecastBody) Var(name=temperatureUnit) } } }
-          Lit(value="#cbd5e1") Lit(value=16)
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgText) {
+            Lit(value="weather.current.summary")
+            Lit(value=56)
+            Add { Var(name=forecastY) Lit(value=42) }
+            If { Eq { Var(name=forecastBody) Lit(value="") } Block { Lit(value="Submit a location to fetch weather.") } Block { Call(target=currentLineFromForecast) { Var(name=forecastBody) Var(name=temperatureUnit) } } }
+            Lit(value="#cbd5e1")
+            Lit(value=16)
+          }
         }
 
         Call(target=renderForecastCards) {
@@ -292,20 +353,27 @@ Program {
         If {
           Eq { Var(name=radarOpen) Lit(value=true) }
           Block {
-            Call(target=interactiveVectorState) {
-              Var(name=handle) Lit(value=96) Lit(value=438)
-              Add { Var(name=w) Lit(value=-192) }
-              Add { Var(name=h) Lit(value=-468) }
-              Lit(value="normal") Lit(value="rect") Lit(value="") Lit(value="#0b1120") Lit(value="#0b1120") Lit(value="#1e293b") Lit(value="#0b1120") Lit(value="#020617")
+            Call(target=aisvgRender) {
+              Var(name=handle)
+              Call(target=aisvgRect) {
+                Lit(value="weather.radar.panel")
+                Lit(value=96)
+                Lit(value=438)
+                Add { Var(name=w) Lit(value=-192) }
+                Add { Var(name=h) Lit(value=-468) }
+                Lit(value="#0b1120")
+                Lit(value="none")
+                Lit(value=0)
+              }
             }
-            Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=112) Lit(value=452) Lit(value="Radar loop panel (image syscall pending)") Lit(value="#e2e8f0") Lit(value=14) }
-            Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=112) Lit(value=474) StrConcat { Lit(value="Frame: ") ToString { Var(name=radarTick) } } Lit(value="#93c5fd") Lit(value=14) }
+            Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.radar.message") Lit(value=112) Lit(value=452) Lit(value="Radar loop panel (image syscall pending)") Lit(value="#e2e8f0") Lit(value=14) } }
+            Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.radar.frame") Lit(value=112) Lit(value=474) StrConcat { Lit(value="Frame: ") ToString { Var(name=radarTick) } } Lit(value="#93c5fd") Lit(value=14) } }
             Lit(value=0)
           }
           Block { Lit(value=0) }
         }
 
-        Call(target=sys.ui.drawText) { Var(name=handle) Lit(value=40) Add { Var(name=h) Lit(value=-28) } Var(name=statusLine) Lit(value="#e2e8f0") Lit(value=14) }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="weather.status") Lit(value=40) Add { Var(name=h) Lit(value=-28) } Var(name=statusLine) Lit(value="#e2e8f0") Lit(value=14) } }
 
         If {
           Eq { Var(name=settingsOpen) Lit(value=true) }

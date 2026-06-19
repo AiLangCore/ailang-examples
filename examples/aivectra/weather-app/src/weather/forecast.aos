@@ -1,5 +1,6 @@
 Program {
   Import(sdk="ailang" path="std/number.aos")
+  Import(package="aivectra" path="src/AiVectra/src/aisvg.aos")
   Import(package="vectra-ui" path="src/vectra/ui/elements.aos")
   Import(path="text.aos")
   Import(path="parse.aos")
@@ -102,9 +103,9 @@ Program {
   Let(name=drawForecastCloud) {
     Fn(params=handle,x,y,color) {
       Block {
-        Call(target=sys.ui.drawEllipse) { Var(name=handle) Var(name=x) Add { Var(name=y) Lit(value=18) } Lit(value=48) Lit(value=22) Var(name=color) }
-        Call(target=sys.ui.drawEllipse) { Var(name=handle) Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=8) } Lit(value=28) Lit(value=28) Var(name=color) }
-        Call(target=sys.ui.drawEllipse) { Var(name=handle) Add { Var(name=x) Lit(value=32) } Add { Var(name=y) Lit(value=14) } Lit(value=24) Lit(value=24) Var(name=color) }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgEllipse) { Lit(value="forecast.cloud.base") Var(name=x) Add { Var(name=y) Lit(value=18) } Lit(value=48) Lit(value=22) Var(name=color) Lit(value="none") Lit(value=0) } }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgEllipse) { Lit(value="forecast.cloud.left") Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=8) } Lit(value=28) Lit(value=28) Var(name=color) Lit(value="none") Lit(value=0) } }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgEllipse) { Lit(value="forecast.cloud.right") Add { Var(name=x) Lit(value=32) } Add { Var(name=y) Lit(value=14) } Lit(value=24) Lit(value=24) Var(name=color) Lit(value="none") Lit(value=0) } }
         Return { Lit(value=0) }
       }
     }
@@ -116,16 +117,16 @@ Program {
         If {
           Eq { Var(name=kind) Lit(value="sun") }
           Block {
-            Call(target=sys.ui.drawEllipse) { Var(name=handle) Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=10) } Lit(value=32) Lit(value=32) Lit(value="#facc15") }
-            Call(target=sys.ui.drawLine) { Var(name=handle) Add { Var(name=x) Lit(value=30) } Var(name=y) Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=7) } Lit(value="#fde68a") Lit(value=2) }
-            Call(target=sys.ui.drawLine) { Var(name=handle) Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=45) } Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=52) } Lit(value="#fde68a") Lit(value=2) }
+            Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgEllipse) { Lit(value="forecast.sun.core") Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=10) } Lit(value=32) Lit(value=32) Lit(value="#facc15") Lit(value="none") Lit(value=0) } }
+            Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgLine) { Lit(value="forecast.sun.ray.top") Add { Var(name=x) Lit(value=30) } Var(name=y) Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=7) } Lit(value="#fde68a") Lit(value=2) } }
+            Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgLine) { Lit(value="forecast.sun.ray.bottom") Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=45) } Add { Var(name=x) Lit(value=30) } Add { Var(name=y) Lit(value=52) } Lit(value="#fde68a") Lit(value=2) } }
             Return { Lit(value=0) }
           }
           Block {
             If {
               Eq { Var(name=kind) Lit(value="partly") }
               Block {
-                Call(target=sys.ui.drawEllipse) { Var(name=handle) Add { Var(name=x) Lit(value=6) } Add { Var(name=y) Lit(value=6) } Lit(value=30) Lit(value=30) Lit(value="#facc15") }
+                Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgEllipse) { Lit(value="forecast.partly.sun") Add { Var(name=x) Lit(value=6) } Add { Var(name=y) Lit(value=6) } Lit(value=30) Lit(value=30) Lit(value="#facc15") Lit(value="none") Lit(value=0) } }
                 Return { Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=16) } Add { Var(name=y) Lit(value=14) } Lit(value="#cbd5e1") } }
               }
               Block {
@@ -137,13 +138,13 @@ Program {
                       Eq { Var(name=kind) Lit(value="snow") }
                       Block {
                         Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=8) } Add { Var(name=y) Lit(value=8) } Lit(value="#cbd5e1") }
-                        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=16) } Add { Var(name=y) Lit(value=44) } Lit(value="*  *  *") Lit(value="#bfdbfe") Lit(value=14) }
+                        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.snow.flakes") Add { Var(name=x) Lit(value=16) } Add { Var(name=y) Lit(value=44) } Lit(value="*  *  *") Lit(value="#bfdbfe") Lit(value=14) } }
                         Return { Lit(value=0) }
                       }
                       Block {
                         Call(target=drawForecastCloud) { Var(name=handle) Add { Var(name=x) Lit(value=8) } Add { Var(name=y) Lit(value=8) } Lit(value="#cbd5e1") }
-                        Call(target=sys.ui.drawLine) { Var(name=handle) Add { Var(name=x) Lit(value=20) } Add { Var(name=y) Lit(value=42) } Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=54) } Lit(value="#38bdf8") Lit(value=2) }
-                        Call(target=sys.ui.drawLine) { Var(name=handle) Add { Var(name=x) Lit(value=34) } Add { Var(name=y) Lit(value=42) } Add { Var(name=x) Lit(value=28) } Add { Var(name=y) Lit(value=54) } Lit(value="#38bdf8") Lit(value=2) }
+                        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgLine) { Lit(value="forecast.rain.drop1") Add { Var(name=x) Lit(value=20) } Add { Var(name=y) Lit(value=42) } Add { Var(name=x) Lit(value=14) } Add { Var(name=y) Lit(value=54) } Lit(value="#38bdf8") Lit(value=2) } }
+                        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgLine) { Lit(value="forecast.rain.drop2") Add { Var(name=x) Lit(value=34) } Add { Var(name=y) Lit(value=42) } Add { Var(name=x) Lit(value=28) } Add { Var(name=y) Lit(value=54) } Lit(value="#38bdf8") Lit(value=2) } }
                         Return { Lit(value=0) }
                       }
                     }
@@ -164,16 +165,22 @@ Program {
         Let(name=minVal) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"temperature_2m_min\":[") Var(name=dayIndex) } }
         Let(name=precipVal) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"precipitation_probability_max\":[") Var(name=dayIndex) } }
         Let(name=code) { Call(target=forecastDailyValue) { Var(name=forecastBody) Lit(value="\"weather_code\":[") Var(name=dayIndex) } }
-        Call(target=sys.ui.drawRect) { Var(name=handle) Var(name=x) Var(name=y) Var(name=w) Var(name=h) Lit(value="#111827") }
-        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=10) } Call(target=forecastDayLabel) { Var(name=dayIndex) } Lit(value="#ffffff") Lit(value=14) }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgRect) { Lit(value="forecast.card") Var(name=x) Var(name=y) Var(name=w) Var(name=h) Lit(value="#111827") Lit(value="none") Lit(value=0) } }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.day") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=10) } Call(target=forecastDayLabel) { Var(name=dayIndex) } Lit(value="#ffffff") Lit(value=14) } }
         Call(target=drawForecastIcon) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=32) } Call(target=forecastIconKind) { Var(name=code) } }
-        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=94) } Call(target=forecastConditionShort) { Var(name=code) } Lit(value="#cbd5e1") Lit(value=12) }
-        Call(target=sys.ui.drawText) {
-          Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=116) }
-          StrConcat { Var(name=maxVal) StrConcat { Lit(value="/") StrConcat { Var(name=minVal) If { Eq { Var(name=temperatureUnit) Lit(value="f") } Block { Lit(value=" F") } Block { Lit(value=" C") } } } } }
-          Lit(value="#f8fafc") Lit(value=14)
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.condition") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=94) } Call(target=forecastConditionShort) { Var(name=code) } Lit(value="#cbd5e1") Lit(value=12) } }
+        Call(target=aisvgRender) {
+          Var(name=handle)
+          Call(target=aisvgText) {
+            Lit(value="forecast.card.temp")
+            Add { Var(name=x) Lit(value=12) }
+            Add { Var(name=y) Lit(value=116) }
+            StrConcat { Var(name=maxVal) StrConcat { Lit(value="/") StrConcat { Var(name=minVal) If { Eq { Var(name=temperatureUnit) Lit(value="f") } Block { Lit(value=" F") } Block { Lit(value=" C") } } } } }
+            Lit(value="#f8fafc")
+            Lit(value=14)
+          }
         }
-        Call(target=sys.ui.drawText) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=140) } StrConcat { Lit(value="Precip ") StrConcat { Var(name=precipVal) Lit(value="%") } } Lit(value="#93c5fd") Lit(value=12) }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.precip") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=140) } StrConcat { Lit(value="Precip ") StrConcat { Var(name=precipVal) Lit(value="%") } } Lit(value="#93c5fd") Lit(value=12) } }
         Return { Lit(value=0) }
       }
     }
@@ -205,4 +212,5 @@ Program {
       }
     }
   }
+}
 }
