@@ -11,6 +11,7 @@ Program {
   Import(path="weather/parse.aos")
   Import(path="weather/state.aos")
   Import(path="weather/ui.aos")
+  Import(path="Views/MainView.aisvg.aos")
   Export(name=start)
 
   Let(name=app) {
@@ -489,9 +490,14 @@ Program {
           Block {
             Let(name=forecastRowW) { Add { Call(target=weatherWidth) { Var(name=state) } Lit(value=-112) } }
             Let(name=forecastRowContentW) { Lit(value=1220) }
+            Let(name=forecastY) { Call(target=mainViewForecastY) { Call(target=weatherHasStoredLocation) { Var(name=state) } } }
+            Let(name=forecastScrollerY) { Add { Var(name=forecastY) Lit(value=456) } }
             Let(name=nextForecastScrollOffset) {
-              Call(target=horizontalScrollerEventOffset) {
+              Call(target=horizontalScrollerEventOffsetInBounds) {
+                Lit(value=56)
+                Var(name=forecastScrollerY)
                 Var(name=forecastRowW)
+                Lit(value=24)
                 Var(name=forecastRowContentW)
                 Call(target=weatherForecastScrollOffset) { Var(name=state) }
                 Var(name=rawEvent)
