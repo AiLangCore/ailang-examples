@@ -30,13 +30,12 @@ Program {
   }
 
   Let(name=forecastCardDayLabel) {
-    Fn(params=baseDayIndex,dayIndex) {
+    Fn(params=forecastBody,dayIndex) {
       Block {
+        Let(name=baseDate) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"time\":[") Lit(value=1) } }
+        Let(name=cardDate) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"time\":[") Var(name=dayIndex) } }
         Return {
-          Call(target=relativeDayLabelFromBaseDayIndex) {
-            Var(name=baseDayIndex)
-            Add { Var(name=dayIndex) Lit(value=-1) }
-          }
+          Call(target=relativeDayLabelFromIsoDate) { Var(name=baseDate) Var(name=cardDate) }
         }
       }
     }

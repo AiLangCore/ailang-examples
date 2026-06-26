@@ -54,23 +54,6 @@ Program {
     }
   }
 
-  Let(name=forecastCardFullyVisible) {
-    Fn(params=cardX,cardW,viewportX,viewportW) {
-      Block {
-        If {
-          Call(target=lt) { Var(name=cardX) Var(name=viewportX) }
-          Block { Return { Lit(value=false) } }
-          Block { Lit(value=0) }
-        }
-        If {
-          Call(target=lt) { Add { Var(name=viewportX) Var(name=viewportW) } Add { Var(name=cardX) Var(name=cardW) } }
-          Block { Return { Lit(value=false) } }
-          Block { Return { Lit(value=true) } }
-        }
-      }
-    }
-  }
-
   Let(name=forecastConditionShort) {
     Fn(params=code) {
       Block {
@@ -172,7 +155,7 @@ Program {
         Let(name=precipVal) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"precipitation_probability_max\":[") Var(name=dayIndex) } }
         Let(name=code) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"weather_code\":[") Var(name=dayIndex) } }
         Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgRect) { Lit(value="forecast.card") Var(name=x) Var(name=y) Var(name=w) Var(name=h) Lit(value="#111827") Lit(value="none") Lit(value=0) } }
-        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.day") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=10) } Call(target=forecastCardDayLabel) { Var(name=baseDayIndex) Var(name=dayIndex) } Lit(value="#ffffff") Lit(value=14) } }
+        Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.day") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=10) } Call(target=forecastCardDayLabel) { Var(name=forecastBody) Var(name=dayIndex) } Lit(value="#ffffff") Lit(value=14) } }
         Call(target=drawForecastIcon) { Var(name=handle) Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=32) } Call(target=forecastCardIconKind) { Var(name=code) } }
         Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.condition") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=94) } Call(target=forecastCardCondition) { Var(name=code) } Lit(value="#cbd5e1") Lit(value=12) } }
         Call(target=aisvgRender) {
@@ -188,32 +171,6 @@ Program {
         }
         Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.card.precip") Add { Var(name=x) Lit(value=12) } Add { Var(name=y) Lit(value=140) } Call(target=forecastCardPrecipitation) { Var(name=precipVal) } Lit(value="#93c5fd") Lit(value=12) } }
         Return { Lit(value=0) }
-      }
-    }
-  }
-
-  Let(name=forecastCardInViewport) {
-    Fn(params=handle,forecastBody,temperatureUnit,baseDayIndex,dayIndex,x,y,w,h,viewportX,viewportW) {
-      Block {
-        If {
-          Call(target=forecastCardFullyVisible) { Var(name=x) Var(name=w) Var(name=viewportX) Var(name=viewportW) }
-          Block {
-            Return {
-              Call(target=forecastCard) {
-                Var(name=handle)
-                Var(name=forecastBody)
-                Var(name=temperatureUnit)
-                Var(name=baseDayIndex)
-                Var(name=dayIndex)
-                Var(name=x)
-                Var(name=y)
-                Var(name=w)
-                Var(name=h)
-              }
-            }
-          }
-          Block { Return { Lit(value=0) } }
-        }
       }
     }
   }
@@ -235,11 +192,24 @@ Program {
             Let(name=rowContentX) { Call(target=sub) { Var(name=rowX) Var(name=rowOffset) } }
             Call(target=aisvgRender) { Var(name=handle) Call(target=aisvgText) { Lit(value="forecast.today.heading") Var(name=todayX) Add { Var(name=forecastY) Lit(value=52) } Lit(value="Today") Lit(value="#f8fafc") Lit(value=24) } }
             Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=1) Var(name=todayX) Add { Var(name=forecastY) Lit(value=84) } Var(name=todayW) Lit(value=176) }
-            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=2) Var(name=rowContentX) Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
-            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=3) Add { Var(name=rowContentX) Lit(value=250) } Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
-            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=4) Add { Var(name=rowContentX) Lit(value=500) } Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
-            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=5) Add { Var(name=rowContentX) Lit(value=750) } Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
-            Call(target=forecastCardInViewport) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=6) Add { Var(name=rowContentX) Lit(value=1000) } Var(name=rowY) Lit(value=220) Lit(value=158) Var(name=rowX) Var(name=rowW) }
+            Call(target=aisvgPushClipPath) {
+              Var(name=handle)
+              Call(target=aisvgClipPath) {
+                Lit(value="forecast.nextFive.clip")
+                Call(target=aisvgRectPathData) {
+                  Var(name=rowX)
+                  Var(name=rowY)
+                  Var(name=rowW)
+                  Lit(value=158)
+                }
+              }
+            }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=2) Var(name=rowContentX) Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=3) Add { Var(name=rowContentX) Lit(value=250) } Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=4) Add { Var(name=rowContentX) Lit(value=500) } Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=5) Add { Var(name=rowContentX) Lit(value=750) } Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=forecastCard) { Var(name=handle) Var(name=forecastBody) Var(name=temperatureUnit) Var(name=baseDayIndex) Lit(value=6) Add { Var(name=rowContentX) Lit(value=1000) } Var(name=rowY) Lit(value=220) Lit(value=158) }
+            Call(target=aisvgPopClipPath) { Var(name=handle) }
             Call(target=horizontalScroller) { Var(name=handle) Var(name=rowX) Add { Var(name=rowY) Lit(value=174) } Var(name=rowW) Var(name=rowContentW) Var(name=rowOffset) }
             Return { Lit(value=0) }
           }

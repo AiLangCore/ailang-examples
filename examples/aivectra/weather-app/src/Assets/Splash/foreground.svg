@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M410 420 H770 C820 420 860 382 860 334 C860 288 824 250 778 250 C760 178 696 128 620 128 C542 128 476 182 460 256 C394 266 344 324 344 392 C344 408 370 420 410 420 Z" fill="#d9e5f2" stroke="#ffffff" stroke-width="18"/>
+    <path d="M486 486 L454 574" stroke="#4ac8ff" stroke-width="22"/>
+    <path d="M612 486 L580 574" stroke="#4ac8ff" stroke-width="22"/>
+    <path d="M738 486 L706 574" stroke="#4ac8ff" stroke-width="22"/>
+  </g>
+  <text x="600" y="680" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="74" font-weight="700" fill="#ffffff">Weather</text>
+</svg>
