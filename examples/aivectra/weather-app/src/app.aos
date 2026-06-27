@@ -345,33 +345,7 @@ Program {
           Block { Lit(value=0) }
         }
         Return {
-          Call(target=weatherState) {
-            Call(target=weatherQuery) { Var(name=state) }
-            Call(target=weatherFocused) { Var(name=state) }
-            Call(target=weatherDropdownOpen) { Var(name=state) }
-            Call(target=weatherGeoBody) { Var(name=state) }
-            Call(target=weatherSelectedLabel) { Var(name=state) }
-            Call(target=weatherSelectedLat) { Var(name=state) }
-            Call(target=weatherSelectedLon) { Var(name=state) }
-            Call(target=weatherForecastBody) { Var(name=state) }
-            Call(target=weatherStatusLine) { Var(name=state) }
-            Call(target=weatherRadarOpen) { Var(name=state) }
-            Call(target=weatherRadarTick) { Var(name=state) }
-            Call(target=weatherWidth) { Var(name=state) }
-            Call(target=weatherHeight) { Var(name=state) }
-            If {
-              Call(target=intLt) { Lit(value=0) Call(target=weatherSubmitFlash) { Var(name=state) } }
-              Block { Add { Call(target=weatherSubmitFlash) { Var(name=state) } Lit(value=-1) } }
-              Block { Lit(value=0) }
-            }
-            Call(target=weatherBlinkTick) { Var(name=state) }
-            Var(name=netKind)
-            Var(name=netStateNow)
-            Var(name=netTicksNow)
-            Call(target=weatherTemperatureUnit) { Var(name=state) }
-            Call(target=weatherSettingsOpen) { Var(name=state) }
-            Call(target=weatherUiPlatform) { Var(name=state) }
-          }
+          Var(name=state)
         }
       }
     }
