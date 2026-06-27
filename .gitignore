@@ -12,3 +12,4 @@ out/
 packages/
 ailang.lock.toml
 config.local.toml
+*.local.*
