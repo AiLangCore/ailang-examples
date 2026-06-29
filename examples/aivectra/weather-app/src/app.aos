@@ -227,7 +227,12 @@ Program {
           Call(target=intLt) { Lit(value=900) Var(name=netTicksNow) }
           Block {
             Call(target=sys.net.asyncCancel) { Call(target=httpRequestOp) { Var(name=netStateNow) } }
-            Return { Call(target=weatherWithStatus) { Var(name=state) Lit(value="Request timed out.") } }
+            Return {
+              Call(target=weatherWithStatus) {
+                Call(target=weatherWithNetworkState) { Var(name=state) Lit(value="") Map { } Lit(value=0) }
+                Lit(value="Request timed out.")
+              }
+            }
           }
           Block { Lit(value=0) }
         }
@@ -236,7 +241,7 @@ Program {
           Block {
             Return {
               Call(target=weatherWithStatus) {
-                Var(name=state)
+                Call(target=weatherWithNetworkState) { Var(name=state) Lit(value="") Map { } Lit(value=0) }
                 StrConcat {
                   If { Eq { Var(name=netKind) Lit(value="geo") } Block { Lit(value="Geocode failed: ") } Block { Lit(value="Forecast failed: ") } }
                   Call(target=httpErrorDisplay) { Call(target=httpRequestError) { Var(name=netStateNow) } }
@@ -345,7 +350,12 @@ Program {
           Block { Lit(value=0) }
         }
         Return {
-          Var(name=state)
+          Call(target=weatherWithNetworkState) {
+            Var(name=state)
+            Var(name=netKind)
+            Var(name=netStateNow)
+            Var(name=netTicksNow)
+          }
         }
       }
     }

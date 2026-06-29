@@ -35,6 +35,7 @@ Program {
   Export(name=weatherWithUiPlatform)
   Export(name=weatherWithStoredLocation)
   Export(name=weatherWithForecastScrollOffset)
+  Export(name=weatherWithNetworkState)
 
   Let(name=weatherState) {
     Fn(params=query,focused,dropdownOpen,geoBody,selectedLabel,selectedLat,selectedLon,forecastBody,statusLine,radarOpen,radarTick,width,height,submitFlash,blinkTick,netKind,netState,netTicks,temperatureUnit,settingsOpen,uiPlatform) {
@@ -315,6 +316,28 @@ Program {
     Fn(params=state,forecastScrollOffset) {
       Block {
         Return { Call(target=mapSet) { Var(name=state) Lit(value="forecastScrollOffset") Var(name=forecastScrollOffset) } }
+      }
+    }
+  }
+
+  Let(name=weatherWithNetworkState) {
+    Fn(params=state,netKind,netState,netTicks) {
+      Block {
+        Return {
+          Call(target=mapSet) {
+            Call(target=mapSet) {
+              Call(target=mapSet) {
+                Var(name=state)
+                Lit(value="netKind")
+                Var(name=netKind)
+              }
+              Lit(value="netState")
+              Var(name=netState)
+            }
+            Lit(value="netTicks")
+            Var(name=netTicks)
+          }
+        }
       }
     }
   }
