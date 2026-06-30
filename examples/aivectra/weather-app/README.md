@@ -44,3 +44,48 @@ compiler is available.
 - Imports HTTP helpers through the `std-http` package.
 - Uses real Open-Meteo responses; no canned weather payloads are embedded in the
   application source.
+
+## AiOS QEMU
+
+The weather app declares the AiOS GUI target package so it can publish and run
+as a shell-less AiOS GUI image.
+
+```bash
+ailang package restore
+ailang publish . \
+  --target aios-gui \
+  --target-option arch=aarch64 \
+  --target-option feature=network \
+  --target-option display-backend=drm \
+  --out dist-aios
+```
+
+To run the published image in QEMU:
+
+```bash
+ailang run . \
+  --target aios-gui \
+  --target-option arch=aarch64 \
+  --target-option feature=network \
+  --target-option debug-console=stdio \
+  --target-option display-backend=drm \
+  -- \
+  -m 2048 \
+  -device virtio-gpu-pci \
+  -device qemu-xhci,id=xhci \
+  -device usb-kbd,bus=xhci.0 \
+  -device usb-tablet,bus=xhci.0 \
+  -display cocoa
+```
+
+AiOS Buildroot base creation requires a Linux build host. macOS can run and
+publish against an already cached or imported base image. The current
+`target-aios-gui` package uses the compatible base image
+`0.0.1-alpha.1` by default; override it only when testing a different base:
+
+```bash
+ailang run . \
+  --target aios-gui \
+  --target-option arch=aarch64 \
+  --target-option base-version=0.0.1-alpha.1
+```
