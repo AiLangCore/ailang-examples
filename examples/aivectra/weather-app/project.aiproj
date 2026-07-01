@@ -10,6 +10,6 @@ Program {
     Include(name="std-http")
     Include(name="std-storage")
     Include(name="target-aios-gui" version="0.0.1-alpha.5")
-    Include(name="target-linux" version="0.0.1-alpha.6")
+    Include(name="target-linux" version="0.0.1-alpha.7")
   }
 }
