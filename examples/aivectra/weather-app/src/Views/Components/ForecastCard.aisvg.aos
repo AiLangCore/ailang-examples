@@ -29,11 +29,33 @@ Program {
     }
   }
 
+  Let(name=forecastCardIsoDateValue) {
+    Fn(params=forecastBody,dayIndex) {
+      Block {
+        Let(name=rawDate) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"time\":[") Var(name=dayIndex) } }
+        Let(name=rawLen) { Call(target=strLen) { Var(name=rawDate) } }
+        If {
+          Eq { Var(name=rawLen) Lit(value=12) }
+          Block {
+            Return {
+              Call(target=substring) {
+                Var(name=rawDate)
+                Lit(value=1)
+                Lit(value=10)
+              }
+            }
+          }
+          Block { Return { Var(name=rawDate) } }
+        }
+      }
+    }
+  }
+
   Let(name=forecastCardDayLabel) {
     Fn(params=forecastBody,dayIndex) {
       Block {
-        Let(name=baseDate) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"time\":[") Lit(value=1) } }
-        Let(name=cardDate) { Call(target=forecastCardDailyValue) { Var(name=forecastBody) Lit(value="\"time\":[") Var(name=dayIndex) } }
+        Let(name=baseDate) { Call(target=forecastCardIsoDateValue) { Var(name=forecastBody) Lit(value=1) } }
+        Let(name=cardDate) { Call(target=forecastCardIsoDateValue) { Var(name=forecastBody) Var(name=dayIndex) } }
         Return {
           Call(target=relativeDayLabelFromIsoDate) { Var(name=baseDate) Var(name=cardDate) }
         }
