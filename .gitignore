@@ -1,4 +1,8 @@
 .DS_Store
+bin/
+obj/
+**/bin/
+**/obj/
 .ailang/
 .local/
 .tmp/
