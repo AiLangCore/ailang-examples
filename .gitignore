@@ -9,6 +9,7 @@ obj/
 .toolchain/
 dist/
 dist-wasm/
+dist-aios/
 build/
 out/
 *.aibc1
@@ -17,3 +18,4 @@ packages/
 ailang.lock.toml
 config.local.toml
 *.local.*
+*_aios.sh
