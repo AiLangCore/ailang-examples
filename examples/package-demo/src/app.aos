@@ -1,19 +1,19 @@
-Program#p1 {
-  Import#i1(sdk="ailang" path="std/core.aos")
-  Import#i2(package="std-json" path="src/format/json.aos")
-  Export#e1(name=start)
+Program {
+  Import(sdk="ailang" path="std/core.aos")
+  Import(package="std-json" path="src/format/json.aos")
+  Export(name=start)
 
-  Let#l1(name=start) {
-    Fn#f1(params=args) {
-      Block#b1 {
-        Let#l2(name=value) {
-          Call#c1(target=resultValueOr) {
-            Call#c2(target=parse) { Lit#s1(value="\"package-demo\"") }
-            Lit#s2(value="fallback")
+  Let(name=start) {
+    Fn(params=args) {
+      Block {
+        Let(name=value) {
+          Call(target=resultValueOr) {
+            Call(target=parse) { Lit(value="\"package-demo\"") }
+            Lit(value="fallback")
           }
         }
-        Call#c3(target=sys.stdout.writeLine) { StrConcat#sc1 { Lit#s3(value="Package restore demo: ") Var#v1(name=value) } }
-        Return#r1 { Lit#i1(value=0) }
+        Call(target=sys.stdout.writeLine) { StrConcat { Lit(value="Package restore demo: ") Var(name=value) } }
+        Return { Lit(value=0) }
       }
     }
   }

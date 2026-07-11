@@ -1,15 +1,15 @@
-Program#p1 {
-  Import#i1(package="aivectra" path="src/AiVectra/src/lib.aos")
-  Export#e1(name=start)
+Program {
+  Import(package="aivectra" path="src/AiVectra/src/lib.aos")
+  Export(name=start)
 
-  Let#l1(name=start) {
-    Fn#f1(params=args) {
-      Block#b1 {
-        Let#h1(name=handle) { Call#c1(target=window) { Lit#title(value="Hello AiVectra") } }
-        Call#c2(target=rect) { Var#v1(name=handle) }
-        Call#c3(target=text) { Var#v2(name=handle) Lit#msg(value="Hello from AiVectra") }
-        Call#c4(target=sys.ui.waitFrame) { Var#v3(name=handle) }
-        Return#r1 { Lit#ok(value=0) }
+  Let(name=start) {
+    Fn(params=args) {
+      Block {
+        Let(name=handle) { Call(target=window) { Lit(value="Hello AiVectra") } }
+        Call(target=rect) { Var(name=handle) }
+        Call(target=text) { Var(name=handle) Lit(value="Hello from AiVectra") }
+        Call(target=sys.ui.waitFrame) { Var(name=handle) }
+        Return { Lit(value=0) }
       }
     }
   }
