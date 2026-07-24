@@ -4,6 +4,15 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT_DIR}"
 
+if [[ "${1:-}" == "--selfhost" ]]; then
+  AILANG_SELFHOST=1
+  shift
+fi
+if [[ $# -ne 0 ]]; then
+  echo "usage: ./scripts/validate-examples.sh [--selfhost]" >&2
+  exit 1
+fi
+
 if [[ -z "${AILANG_PACKAGE_REGISTRY:-}" && -d "${ROOT_DIR}/../ailang-packages/packages" ]]; then
   export AILANG_PACKAGE_REGISTRY="${ROOT_DIR}/../ailang-packages"
 fi
@@ -17,10 +26,22 @@ require_tool() {
 }
 
 AILANG_BIN="${AILANG_BIN:-}"
-if [[ -z "${AILANG_BIN}" && -x "${ROOT_DIR}/../AiLang/tools/ailang" ]]; then
+AILANG_SELFHOST_AIBC1="${AILANG_SELFHOST_AIBC1:-${ROOT_DIR}/../AiLang/.artifacts/ailang-selfhost/bin/ailang.aibc1}"
+AILANG_SELFHOST_RUNTIME="${AILANG_SELFHOST_RUNTIME:-${ROOT_DIR}/../AiLang/tools/aivm-runtime}"
+AILANG_SELFHOST_SDK_ROOT="${AILANG_SELFHOST_SDK_ROOT:-${ROOT_DIR}/../AiLang/.artifacts/ailang-selfhost}"
+if [[ "${AILANG_SELFHOST:-0}" != "1" && -z "${AILANG_BIN}" && -x "${ROOT_DIR}/../AiLang/tools/ailang" ]]; then
   AILANG_BIN="${ROOT_DIR}/../AiLang/tools/ailang"
 fi
 AILANG_BIN="${AILANG_BIN:-ailang}"
+
+run_ailang() {
+  if [[ "${AILANG_SELFHOST:-0}" == "1" ]]; then
+    AILANG_SDK_ROOT="${AILANG_SELFHOST_SDK_ROOT}" \
+      "${AILANG_SELFHOST_RUNTIME}" run "${AILANG_SELFHOST_AIBC1}" -- "$@"
+  else
+    "${AILANG_BIN}" "$@"
+  fi
+}
 
 run_example() {
   local path="$1"
@@ -28,10 +49,10 @@ run_example() {
   (
     cd "${path}"
     if grep -Eq 'Include#|Include\(' project.aiproj; then
-      "${AILANG_BIN}" package restore
+      run_ailang package restore
     fi
-    "${AILANG_BIN}" build .
-    "${AILANG_BIN}" run .
+    run_ailang build .
+    run_ailang run .
   )
 }
 
@@ -41,9 +62,9 @@ build_example() {
   (
     cd "${path}"
     if grep -Eq 'Include#|Include\(' project.aiproj; then
-      "${AILANG_BIN}" package restore
+      run_ailang package restore
     fi
-    "${AILANG_BIN}" build .
+    run_ailang build .
   )
 }
 
@@ -55,10 +76,10 @@ build_and_run_mode() {
   (
     cd "${path}"
     if grep -Eq 'Include#|Include\(' project.aiproj; then
-      "${AILANG_BIN}" package restore
+      run_ailang package restore
     fi
-    "${AILANG_BIN}" build .
-    out="$("${AILANG_BIN}" run . "${mode}")"
+    run_ailang build .
+    out="$(run_ailang run . "${mode}")"
     printf "%s\n" "$out"
     if [[ -n "$expected" ]] && ! printf "%s\n" "$out" | grep -Fq "$expected"; then
       echo "expected output fragment not found: $expected" >&2
@@ -67,13 +88,16 @@ build_and_run_mode() {
   )
 }
 
-if [[ "${AILANG_BIN}" == "ailang" ]]; then
+if [[ "${AILANG_SELFHOST:-0}" == "1" ]]; then
+  test -x "${AILANG_SELFHOST_RUNTIME}"
+  test -s "${AILANG_SELFHOST_AIBC1}"
+elif [[ "${AILANG_BIN}" == "ailang" ]]; then
   require_tool ailang
 fi
 require_tool aivm
 require_tool aivectra
 
-"${AILANG_BIN}" --version
+run_ailang version
 aivm --version
 aivectra --version
 
